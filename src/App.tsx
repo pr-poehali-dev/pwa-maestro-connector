@@ -8,7 +8,6 @@ import Index from "./pages/Index";
 import MasterLayout from "./pages/MasterLayout";
 import PublicBooking from "./pages/PublicBooking";
 import NotFound from "./pages/NotFound";
-import "@/styles/tact-design-tokens.css";
 
 const queryClient = new QueryClient();
 
