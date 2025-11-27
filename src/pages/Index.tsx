@@ -110,43 +110,21 @@ const Index = () => {
       </header>
 
       {activeTab === 'home' && (
-        <main className="container mx-auto px-4 py-6 space-y-8">
+        <main className="container mx-auto px-4 py-6 space-y-6">
           <section className="space-y-4">
-            <div className="text-center space-y-2">
+            <div className="text-center space-y-2 py-4">
               <h2 className="text-3xl font-bold">Найди своего мастера</h2>
-              <p className="text-muted-foreground">Онлайн-запись к лучшим специалистам</p>
+              <p className="text-muted-foreground">Быстрая онлайн-запись к проверенным специалистам</p>
             </div>
 
             <div className="relative max-w-2xl mx-auto">
               <Icon name="Search" className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
               <Input
-                placeholder="Поиск услуги или мастера..."
+                placeholder="Поиск по имени мастера или услуге..."
                 className="pl-10 h-12 text-base"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-            </div>
-          </section>
-
-          <section className="space-y-4">
-            <h3 className="text-xl font-semibold">Популярные категории</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              {categories.map((cat) => (
-                <Card
-                  key={cat.id}
-                  className="cursor-pointer hover:shadow-md transition-shadow hover-scale"
-                >
-                  <CardContent className="p-4 text-center space-y-2">
-                    <div className="w-12 h-12 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
-                      <Icon name={cat.icon as any} className="text-primary" size={24} />
-                    </div>
-                    <div>
-                      <p className="font-medium text-sm">{cat.name}</p>
-                      <p className="text-xs text-muted-foreground">{cat.count} мастеров</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
             </div>
           </section>
 

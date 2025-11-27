@@ -9,6 +9,7 @@ import MasterClients from './MasterClients';
 import MasterServices from './MasterServices';
 import MasterSchedule from './MasterSchedule';
 import MasterNotifications from './MasterNotifications';
+import MasterSettings from './MasterSettings';
 
 const notifications = [
   { id: 1, type: 'new_booking', text: 'Новая запись от Марии Соколовой', time: '5 мин назад', unread: true },
@@ -78,6 +79,7 @@ const MasterLayout = () => {
         {activeTab === 'services' && <MasterServices />}
         {activeTab === 'schedule' && <MasterSchedule />}
         {activeTab === 'notifications' && <MasterNotifications />}
+        {activeTab === 'settings' && <MasterSettings />}
       </main>
 
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-border z-50 shadow-lg">
@@ -124,18 +126,13 @@ const MasterLayout = () => {
             </button>
 
             <button
-              onClick={() => setActiveTab('notifications')}
-              className={`flex flex-col items-center gap-1 px-3 py-2 transition-colors relative ${
-                activeTab === 'notifications' ? 'text-primary' : 'text-muted-foreground'
+              onClick={() => setActiveTab('settings')}
+              className={`flex flex-col items-center gap-1 px-3 py-2 transition-colors ${
+                activeTab === 'settings' ? 'text-primary' : 'text-muted-foreground'
               }`}
             >
-              <Icon name="Bell" size={22} />
-              {unreadCount > 0 && (
-                <Badge className="absolute top-1 right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px]">
-                  {unreadCount}
-                </Badge>
-              )}
-              <span className="text-xs font-medium">Уведомления</span>
+              <Icon name="Settings" size={22} />
+              <span className="text-xs font-medium">Настройки</span>
             </button>
           </div>
         </div>

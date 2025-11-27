@@ -60,15 +60,23 @@ const MasterServices = () => {
   const [showNewService, setShowNewService] = useState(false);
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">Мои услуги</h2>
-          <p className="text-sm text-muted-foreground">{services.length} активных услуг</p>
+    <div className="space-y-4 pb-20">
+      <div className="sticky top-[73px] z-30 bg-background pt-4 pb-3 border-b">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold">Мои услуги</h2>
+            <p className="text-sm text-muted-foreground">{services.length} активных услуг</p>
+          </div>
         </div>
-        <Button onClick={() => setShowNewService(true)}>
-          <Icon name="Plus" size={16} className="mr-2" />
-          Добавить услугу
+      </div>
+
+      <div className="fixed bottom-20 right-4 z-40">
+        <Button 
+          size="lg" 
+          className="h-14 w-14 rounded-full shadow-lg"
+          onClick={() => setShowNewService(true)}
+        >
+          <Icon name="Plus" size={24} />
         </Button>
       </div>
 
