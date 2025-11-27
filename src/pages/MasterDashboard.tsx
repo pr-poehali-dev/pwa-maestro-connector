@@ -222,9 +222,9 @@ const MasterDashboard = ({ onNavigate }: MasterDashboardProps) => {
               <Icon name="Settings" size={20} />
               <span className="text-xs">Услуги</span>
             </Button>
-            <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => onNavigate('schedule')}>
-              <Icon name="Calendar" size={20} />
-              <span className="text-xs">Расписание</span>
+            <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => onNavigate('notifications')}>
+              <Icon name="Bell" size={20} />
+              <span className="text-xs">Уведомления</span>
             </Button>
           </CardContent>
         </Card>
