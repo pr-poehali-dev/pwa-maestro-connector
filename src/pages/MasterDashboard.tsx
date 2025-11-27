@@ -205,27 +205,23 @@ const MasterDashboard = ({ onNavigate }: MasterDashboardProps) => {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Быстрые действия</CardTitle>
-          </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-3">
-            <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => onNavigate('calendar')}>
-              <Icon name="Plus" size={20} />
-              <span className="text-xs">Новая запись</span>
-            </Button>
-            <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => onNavigate('clients')}>
-              <Icon name="UserPlus" size={20} />
-              <span className="text-xs">Добавить клиента</span>
-            </Button>
-            <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => onNavigate('services')}>
-              <Icon name="Settings" size={20} />
-              <span className="text-xs">Услуги</span>
-            </Button>
-            <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => onNavigate('notifications')}>
-              <Icon name="Bell" size={20} />
-              <span className="text-xs">Уведомления</span>
-            </Button>
+        <Card className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-xl font-bold">Создать запись</h3>
+                <p className="text-sm opacity-90">Добавьте новую запись клиента в несколько кликов</p>
+              </div>
+              <Button 
+                size="lg" 
+                variant="secondary" 
+                className="w-full" 
+                onClick={() => onNavigate('calendar')}
+              >
+                <Icon name="Plus" size={20} className="mr-2" />
+                Новая запись
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>

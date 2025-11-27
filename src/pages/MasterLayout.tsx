@@ -10,6 +10,7 @@ import MasterServices from './MasterServices';
 import MasterSchedule from './MasterSchedule';
 import MasterNotifications from './MasterNotifications';
 import MasterSettings from './MasterSettings';
+import LinkGenerator from './LinkGenerator';
 
 const notifications = [
   { id: 1, type: 'new_booking', text: 'Новая запись от Марии Соколовой', time: '5 мин назад', unread: true },
@@ -77,6 +78,7 @@ const MasterLayout = () => {
         {activeTab === 'calendar' && <MasterCalendar />}
         {activeTab === 'clients' && <MasterClients />}
         {activeTab === 'services' && <MasterServices />}
+        {activeTab === 'links' && <LinkGenerator />}
         {activeTab === 'schedule' && <MasterSchedule />}
         {activeTab === 'notifications' && <MasterNotifications />}
         {activeTab === 'settings' && <MasterSettings />}
@@ -117,7 +119,7 @@ const MasterLayout = () => {
 
             <button
               onClick={() => setActiveTab('services')}
-              className={`flex flex-col items-center gap-1 px-4 py-2 transition-colors ${
+              className={`flex flex-col items-center gap-1 px-3 py-2 transition-colors ${
                 activeTab === 'services' ? 'text-primary' : 'text-muted-foreground'
               }`}
             >
@@ -126,8 +128,18 @@ const MasterLayout = () => {
             </button>
 
             <button
-              onClick={() => setActiveTab('settings')}
+              onClick={() => setActiveTab('links')}
               className={`flex flex-col items-center gap-1 px-3 py-2 transition-colors ${
+                activeTab === 'links' ? 'text-primary' : 'text-muted-foreground'
+              }`}
+            >
+              <Icon name="Link" size={22} />
+              <span className="text-xs font-medium">Ссылки</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('settings')}
+              className={`flex flex-col items-center gap-1 px-2 py-2 transition-colors ${
                 activeTab === 'settings' ? 'text-primary' : 'text-muted-foreground'
               }`}
             >

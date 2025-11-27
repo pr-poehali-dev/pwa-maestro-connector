@@ -22,8 +22,6 @@ const MasterSettings = () => {
 
   const [paymentSettings, setPaymentSettings] = useState({
     onlinePaymentEnabled: true,
-    prepaymentRequired: false,
-    prepaymentPercent: 30,
     yukassaConnected: true,
     stripeConnected: false,
   });
@@ -225,39 +223,17 @@ const MasterSettings = () => {
                 />
               </div>
 
-              {paymentSettings.onlinePaymentEnabled && (
-                <>
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
-                    <div>
-                      <Label className="font-medium">Обязательная предоплата</Label>
-                      <p className="text-xs text-muted-foreground">Клиент оплачивает часть суммы при записи</p>
-                    </div>
-                    <Switch
-                      checked={paymentSettings.prepaymentRequired}
-                      onCheckedChange={(checked) => setPaymentSettings({ ...paymentSettings, prepaymentRequired: checked })}
-                    />
+              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-start gap-2">
+                  <Icon name="Info" className="text-blue-600 mt-0.5" size={16} />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-blue-900">Предоплата</p>
+                    <p className="text-xs text-blue-700 mt-1">
+                      Настройка предоплаты теперь доступна для каждой услуги отдельно в разделе "Услуги". Также можно изменить предоплату при создании каждой записи.
+                    </p>
                   </div>
-
-                  {paymentSettings.prepaymentRequired && (
-                    <div className="space-y-2">
-                      <Label>Размер предоплаты (%)</Label>
-                      <div className="flex items-center gap-2">
-                        <Input
-                          type="number"
-                          min="10"
-                          max="100"
-                          value={paymentSettings.prepaymentPercent}
-                          onChange={(e) => setPaymentSettings({ ...paymentSettings, prepaymentPercent: parseInt(e.target.value) })}
-                          className="w-24"
-                        />
-                        <span className="text-sm text-muted-foreground">
-                          от стоимости услуги
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
+                </div>
+              </div>
             </CardContent>
           </Card>
 

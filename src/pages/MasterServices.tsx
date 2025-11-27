@@ -20,6 +20,11 @@ const services = [
     description: 'Классический маникюр с покрытием гель-лаком',
     active: true,
     bookingsThisMonth: 24,
+    type: 'offline',
+    address: 'г. Москва, ул. Примерная, д. 1',
+    isGroup: false,
+    prepaymentRequired: true,
+    prepaymentPercent: 30,
   },
   {
     id: 2,
@@ -30,16 +35,27 @@ const services = [
     description: 'Медицинский педикюр',
     active: true,
     bookingsThisMonth: 18,
+    type: 'offline',
+    address: 'г. Москва, ул. Примерная, д. 1',
+    isGroup: false,
+    prepaymentRequired: false,
+    prepaymentPercent: 0,
   },
   {
     id: 3,
-    name: 'Покрытие гель-лак',
-    category: 'Маникюр',
-    duration: 30,
-    price: 800,
-    description: 'Только покрытие без обработки',
+    name: 'Групповой урок маникюра',
+    category: 'Обучение',
+    duration: 120,
+    price: 3000,
+    description: 'Мастер-класс по маникюру в группе',
     active: true,
-    bookingsThisMonth: 15,
+    bookingsThisMonth: 8,
+    type: 'online',
+    videoLink: 'https://zoom.us/j/example',
+    isGroup: true,
+    maxParticipants: 10,
+    prepaymentRequired: true,
+    prepaymentPercent: 100,
   },
   {
     id: 4,
@@ -50,6 +66,11 @@ const services = [
     description: 'Безопасное снятие гель-лака',
     active: true,
     bookingsThisMonth: 12,
+    type: 'offline',
+    address: 'г. Москва, ул. Примерная, д. 1',
+    isGroup: false,
+    prepaymentRequired: false,
+    prepaymentPercent: 0,
   },
 ];
 
@@ -94,7 +115,7 @@ const MasterServices = () => {
 
                   <p className="text-sm text-muted-foreground">{service.description}</p>
 
-                  <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-4 text-sm flex-wrap">
                     <div className="flex items-center gap-1 text-muted-foreground">
                       <Icon name="Clock" size={14} />
                       <span>{service.duration} мин</span>
@@ -103,10 +124,16 @@ const MasterServices = () => {
                       <Icon name="Wallet" size={14} />
                       <span>{service.price} ₽</span>
                     </div>
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <Icon name="Calendar" size={14} />
-                      <span>{service.bookingsThisMonth} записей в месяц</span>
-                    </div>
+                    {service.isGroup && (
+                      <Badge variant="secondary" className="text-xs">
+                        <Icon name="Users" size={12} className="mr-1" />
+                        До {service.maxParticipants} чел
+                      </Badge>
+                    )}
+                    <Badge variant="outline" className="text-xs">
+                      <Icon name={service.type === 'online' ? 'Video' : 'MapPin'} size={12} className="mr-1" />
+                      {service.type === 'online' ? 'Онлайн' : 'Оффлайн'}
+                    </Badge>
                   </div>
                 </div>
 
@@ -118,6 +145,17 @@ const MasterServices = () => {
                   >
                     <Icon name="Edit" size={14} className="mr-1" />
                     Изменить
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="ghost"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(`/book/master1/${service.id}`, '_blank');
+                    }}
+                  >
+                    <Icon name="Link" size={14} className="mr-1" />
+                    Ссылка
                   </Button>
                 </div>
               </div>
@@ -160,6 +198,49 @@ const MasterServices = () => {
               </Select>
             </div>
 
+            <div className="space-y-2">
+              <Label>Тип услуги</Label>
+              <Select defaultValue={selectedService?.type || 'offline'}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="offline">
+                    <div className="flex items-center gap-2">
+                      <Icon name="MapPin" size={14} />
+                      Оффлайн встреча
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="online">
+                    <div className="flex items-center gap-2">
+                      <Icon name="Video" size={14} />
+                      Онлайн встреча
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {selectedService?.type === 'offline' && (
+              <div className="space-y-2">
+                <Label>Адрес встречи</Label>
+                <Input 
+                  placeholder="г. Москва, ул. Примерная, д. 1" 
+                  defaultValue={selectedService?.address}
+                />
+              </div>
+            )}
+
+            {selectedService?.type === 'online' && (
+              <div className="space-y-2">
+                <Label>Ссылка на видеовстречу (опционально)</Label>
+                <Input 
+                  placeholder="https://zoom.us/j/..." 
+                  defaultValue={selectedService?.videoLink}
+                />
+              </div>
+            )}
+
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Длительность (минут)</Label>
@@ -195,6 +276,49 @@ const MasterServices = () => {
                 rows={3}
                 defaultValue={selectedService?.description}
               />
+            </div>
+
+            <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+              <div>
+                <Label>Групповая услуга</Label>
+                <p className="text-xs text-muted-foreground">Несколько клиентов одновременно</p>
+              </div>
+              <Switch defaultChecked={selectedService?.isGroup ?? false} />
+            </div>
+
+            {selectedService?.isGroup && (
+              <div className="space-y-2">
+                <Label>Максимум участников</Label>
+                <Input 
+                  type="number" 
+                  min="2" 
+                  max="50" 
+                  placeholder="10" 
+                  defaultValue={selectedService?.maxParticipants}
+                />
+              </div>
+            )}
+
+            <div className="space-y-3 p-3 border rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Требуется предоплата</Label>
+                  <p className="text-xs text-muted-foreground">Клиент оплачивает часть при записи</p>
+                </div>
+                <Switch defaultChecked={selectedService?.prepaymentRequired ?? false} />
+              </div>
+              {selectedService?.prepaymentRequired && (
+                <div className="space-y-2">
+                  <Label>Размер предоплаты (%)</Label>
+                  <Input 
+                    type="number" 
+                    min="10" 
+                    max="100" 
+                    placeholder="30" 
+                    defaultValue={selectedService?.prepaymentPercent}
+                  />
+                </div>
+              )}
             </div>
 
             <div className="flex items-center justify-between p-3 bg-muted rounded-lg">

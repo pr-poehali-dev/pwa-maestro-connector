@@ -36,6 +36,8 @@ const MasterCalendar = () => {
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedServiceFilter, setSelectedServiceFilter] = useState('all');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [prepaymentPercent, setPrepaymentPercent] = useState(0);
 
   const filteredAppointments = selectedServiceFilter === 'all' 
     ? appointments 
@@ -281,17 +283,38 @@ const MasterCalendar = () => {
             </div>
 
             <div className="space-y-2">
-              <Label>Услуга</Label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Выберите услугу" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">Маникюр с покрытием (60 мин, 1500 ₽)</SelectItem>
-                  <SelectItem value="2">Педикюр (90 мин, 2000 ₽)</SelectItem>
-                  <SelectItem value="3">Чистка лица (60 мин, 3000 ₽)</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label>Услуги (можно выбрать несколько)</Label>
+              <div className="space-y-2">
+                {[
+                  { id: '1', name: 'Маникюр с покрытием', duration: 60, price: 1500 },
+                  { id: '2', name: 'Педикюр', duration: 90, price: 2000 },
+                  { id: '3', name: 'Снятие покрытия', duration: 15, price: 300 },
+                ].map(service => (
+                  <div 
+                    key={service.id} 
+                    className="flex items-center gap-2 p-3 border rounded-lg cursor-pointer hover:bg-muted/50"
+                    onClick={() => {
+                      if (selectedServices.includes(service.id)) {
+                        setSelectedServices(selectedServices.filter(id => id !== service.id));
+                      } else {
+                        setSelectedServices([...selectedServices, service.id]);
+                      }
+                    }}
+                  >
+                    <div className={`w-4 h-4 border-2 rounded flex items-center justify-center ${
+                      selectedServices.includes(service.id) ? 'bg-primary border-primary' : 'border-muted-foreground'
+                    }`}>
+                      {selectedServices.includes(service.id) && (
+                        <Icon name="Check" size={12} className="text-primary-foreground" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">{service.name}</p>
+                      <p className="text-xs text-muted-foreground">{service.duration} мин · {service.price} ₽</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -317,6 +340,31 @@ const MasterCalendar = () => {
             <div className="space-y-2">
               <Label>Заметка (опционально)</Label>
               <Input placeholder="Примечание к записи" />
+            </div>
+
+            <div className="space-y-3 p-3 border rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-sm">Требуется предоплата</Label>
+                  <p className="text-xs text-muted-foreground">Клиент оплачивает часть при записи</p>
+                </div>
+                <Switch 
+                  checked={prepaymentPercent > 0} 
+                  onCheckedChange={(checked) => setPrepaymentPercent(checked ? 30 : 0)}
+                />
+              </div>
+              {prepaymentPercent > 0 && (
+                <div className="space-y-2">
+                  <Label className="text-sm">Размер предоплаты (%)</Label>
+                  <Input 
+                    type="number" 
+                    min="10" 
+                    max="100" 
+                    value={prepaymentPercent}
+                    onChange={(e) => setPrepaymentPercent(parseInt(e.target.value) || 0)}
+                  />
+                </div>
+              )}
             </div>
 
             <div className="flex gap-2">

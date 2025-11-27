@@ -23,6 +23,9 @@ const service = {
   description: 'Классический маникюр с покрытием гель-лаком премиум качества',
   type: 'offline',
   address: 'г. Москва, ул. Примерная, д. 1',
+  isGroup: false,
+  maxParticipants: 1,
+  currentParticipants: 0,
 };
 
 const availableSlots = [
@@ -113,6 +116,18 @@ const PublicBooking = () => {
                 <div>
                   <p className="text-sm font-medium text-blue-900">Онлайн консультация</p>
                   <p className="text-xs text-blue-700">Ссылка придёт за 15 минут до начала</p>
+                </div>
+              </div>
+            )}
+
+            {service.isGroup && (
+              <div className="flex items-start gap-2 p-3 bg-primary/10 rounded-lg mt-3">
+                <Icon name="Users" size={16} className="mt-0.5 text-primary" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium">Групповая запись</p>
+                  <p className="text-xs text-muted-foreground">
+                    Осталось {service.maxParticipants - service.currentParticipants} мест из {service.maxParticipants}
+                  </p>
                 </div>
               </div>
             )}
