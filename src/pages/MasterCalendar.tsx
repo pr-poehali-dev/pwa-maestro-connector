@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
+import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
 import Icon from '@/components/ui/icon';
 
 const appointments = [
@@ -290,29 +292,25 @@ const MasterCalendar = () => {
                   { id: '2', name: 'Педикюр', duration: 90, price: 2000 },
                   { id: '3', name: 'Снятие покрытия', duration: 15, price: 300 },
                 ].map(service => (
-                  <div 
+                  <label 
                     key={service.id} 
-                    className="flex items-center gap-2 p-3 border rounded-lg cursor-pointer hover:bg-muted/50"
-                    onClick={() => {
-                      if (selectedServices.includes(service.id)) {
-                        setSelectedServices(selectedServices.filter(id => id !== service.id));
-                      } else {
-                        setSelectedServices([...selectedServices, service.id]);
-                      }
-                    }}
+                    className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-muted/50"
                   >
-                    <div className={`w-4 h-4 border-2 rounded flex items-center justify-center ${
-                      selectedServices.includes(service.id) ? 'bg-primary border-primary' : 'border-muted-foreground'
-                    }`}>
-                      {selectedServices.includes(service.id) && (
-                        <Icon name="Check" size={12} className="text-primary-foreground" />
-                      )}
-                    </div>
+                    <Checkbox 
+                      checked={selectedServices.includes(service.id)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setSelectedServices([...selectedServices, service.id]);
+                        } else {
+                          setSelectedServices(selectedServices.filter(id => id !== service.id));
+                        }
+                      }}
+                    />
                     <div className="flex-1">
                       <p className="text-sm font-medium">{service.name}</p>
                       <p className="text-xs text-muted-foreground">{service.duration} мин · {service.price} ₽</p>
                     </div>
-                  </div>
+                  </label>
                 ))}
               </div>
             </div>
