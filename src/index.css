@@ -1,48 +1,40 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
-/* Импорт Tact Design System */
-@import "./styles/tact-design-tokens.css";
-@import "./styles/tact-base.css";
-@import "./styles/tact-components.css";
-@import "./styles/tact-utilities.css";
-@import "./styles/tact-app-overrides.css";
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Обновленные цвета согласно Tact Design System */
-    --background: 250 20% 99%;
-    --foreground: 222 47% 11%;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 222.2 84% 4.9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 220 55% 36%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 174 100% 39%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
 
-    --destructive: 350 89% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 220 55% 36%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -113,37 +105,5 @@
       BlinkMacSystemFont,
       "Segoe UI",
       sans-serif;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: var(--tact-font-family);
-    font-weight: var(--tact-font-semibold);
-  }
-}
-
-/* Tact-специфичные улучшения для Tailwind компонентов */
-@layer components {
-  /* Кнопки с Tact стилями */
-  .btn-tact-primary {
-    @apply bg-[#2A4B8C] hover:bg-[#1e3a6f] text-white font-medium rounded-xl h-12 px-6 transition-all shadow-sm hover:shadow-md;
-  }
-
-  .btn-tact-accent {
-    @apply bg-[#00C9B1] hover:bg-[#00b09a] text-white font-medium rounded-xl h-12 px-6 transition-all shadow-sm hover:shadow-md;
-  }
-
-  /* Карточки с Tact стилями */
-  .card-tact {
-    @apply bg-white rounded-2xl p-5 shadow-sm border border-gray-200 transition-all hover:shadow-md;
-  }
-
-  /* Инпуты с Tact стилями */
-  .input-tact {
-    @apply h-12 px-4 rounded-xl border border-gray-300 focus:border-[#2A4B8C] focus:ring-2 focus:ring-[#2A4B8C]/20 transition-all;
   }
 }
