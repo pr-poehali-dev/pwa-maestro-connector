@@ -11,8 +11,6 @@ const masterInfo = {
   name: 'Анна Петрова',
   avatar: '/placeholder.svg',
   category: 'Маникюр и педикюр',
-  rating: 4.9,
-  reviews: 127,
 };
 
 const services = [
@@ -72,90 +70,59 @@ const LinkGenerator = () => {
         <p className="text-sm text-muted-foreground">Отправляйте ссылки на запись клиентам</p>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid gap-3">
         {services.map((service) => {
           const link = generateLink(service.id);
           return (
-            <Card key={service.id}>
+            <Card key={service.id} className="hover:shadow-md transition-shadow">
               <CardContent className="p-4">
-                <div className="space-y-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h4 className="font-semibold">{service.name}</h4>
-                        {service.isGroup && (
-                          <Badge variant="secondary" className="text-xs">
-                            <Icon name="Users" size={12} className="mr-1" />
-                            Группа
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-3">{service.description}</p>
-                      
-                      <div className="flex items-center gap-4 text-sm flex-wrap">
-                        <div className="flex items-center gap-1">
-                          <Icon name="Clock" size={14} />
-                          <span>{service.duration} мин</span>
-                        </div>
-                        <div className="flex items-center gap-1 font-semibold">
-                          <Icon name="Wallet" size={14} />
-                          <span>{service.price} ₽</span>
-                        </div>
-                        {service.isGroup && (
-                          <div className="flex items-center gap-1">
-                            <Icon name="Users" size={14} />
-                            <span>{service.currentParticipants}/{service.maxParticipants} записано</span>
-                          </div>
-                        )}
-                      </div>
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-semibold">{service.name}</h4>
+                      {service.isGroup && (
+                        <Badge variant="secondary" className="text-xs">
+                          <Icon name="Users" size={12} className="mr-1" />
+                          Группа
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                      <span>{service.duration} мин</span>
+                      <span>•</span>
+                      <span className="font-semibold">{service.price} ₽</span>
+                      {service.isGroup && (
+                        <>
+                          <span>•</span>
+                          <span>{service.currentParticipants}/{service.maxParticipants} мест</span>
+                        </>
+                      )}
                     </div>
                   </div>
-
-                  <div className="p-3 bg-muted rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <code className="flex-1 text-xs break-all">{link}</code>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => copyLink(link)}
-                        className="shrink-0"
-                      >
-                        <Icon name={copiedLink === link ? "Check" : "Copy"} size={14} />
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1"
-                      onClick={() => {
-                        setSelectedService(service);
-                        setShowPreview(true);
-                      }}
-                    >
-                      <Icon name="Eye" size={14} className="mr-2" />
-                      Предпросмотр
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1"
-                      onClick={() => window.open(link, '_blank')}
-                    >
-                      <Icon name="ExternalLink" size={14} className="mr-2" />
-                      Открыть
-                    </Button>
-                    <Button
-                      size="sm"
-                      className="flex-1"
-                      onClick={() => copyLink(link)}
-                    >
-                      <Icon name="Share2" size={14} className="mr-2" />
-                      Скопировать
-                    </Button>
-                  </div>
+                  <Button
+                    size="sm"
+                    variant={copiedLink === link ? "default" : "outline"}
+                    onClick={() => copyLink(link)}
+                  >
+                    <Icon name={copiedLink === link ? "Check" : "Copy"} size={14} className="mr-1" />
+                    {copiedLink === link ? 'Скопировано' : 'Скопировать'}
+                  </Button>
+                </div>
+                
+                <div className="flex items-center gap-2 p-2 bg-muted/50 rounded text-xs">
+                  <Icon name="Link" size={12} className="text-muted-foreground shrink-0" />
+                  <code className="flex-1 truncate">{link}</code>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-6 px-2"
+                    onClick={() => {
+                      setSelectedService(service);
+                      setShowPreview(true);
+                    }}
+                  >
+                    <Icon name="Eye" size={12} />
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -174,18 +141,13 @@ const LinkGenerator = () => {
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-start gap-4">
-                    <Avatar className="w-16 h-16">
+                    <Avatar className="w-14 h-14">
                       <AvatarImage src={masterInfo.avatar} />
                       <AvatarFallback>{masterInfo.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
-                      <h2 className="text-xl font-bold">{masterInfo.name}</h2>
+                      <h2 className="text-lg font-bold">{masterInfo.name}</h2>
                       <p className="text-sm text-muted-foreground">{masterInfo.category}</p>
-                      <div className="flex items-center gap-1 mt-2">
-                        <Icon name="Star" size={14} className="text-yellow-500 fill-yellow-500" />
-                        <span className="text-sm font-medium">{masterInfo.rating}</span>
-                        <span className="text-xs text-muted-foreground">({masterInfo.reviews})</span>
-                      </div>
                     </div>
                   </div>
                 </CardContent>

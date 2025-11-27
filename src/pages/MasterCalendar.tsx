@@ -48,15 +48,13 @@ const MasterCalendar = () => {
   return (
     <div className="space-y-4 pb-20">
       <div className="sticky top-[73px] z-30 bg-background pt-4 pb-3 border-b">
-        <div className="flex items-center justify-between mb-3">
-          <div>
-            <h2 className="text-2xl font-bold">Календарь записей</h2>
-            <p className="text-sm text-muted-foreground">Среда, 27 ноября 2024</p>
-          </div>
+        <div className="mb-3">
+          <h2 className="text-2xl font-bold">Календарь записей</h2>
+          <p className="text-xs text-muted-foreground">Среда, 27 ноября 2024</p>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
-          <div className="flex gap-2">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
             <Button 
               size="sm" 
               variant={view === 'day' ? 'default' : 'outline'} 
@@ -81,28 +79,33 @@ const MasterCalendar = () => {
               <Icon name="CalendarRange" size={14} className="mr-1" />
               Месяц
             </Button>
+            
+            <div className="flex-1" />
+            
+            <div className="flex gap-1">
+              <Button size="sm" variant="ghost">
+                <Icon name="ChevronLeft" size={16} />
+              </Button>
+              <Button size="sm" variant="ghost">
+                <Icon name="ChevronRight" size={16} />
+              </Button>
+            </div>
           </div>
-
-          <Select value={selectedServiceFilter} onValueChange={setSelectedServiceFilter}>
-            <SelectTrigger className="w-48 h-9">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {services.map(service => (
-                <SelectItem key={service.id} value={service.id}>{service.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <div className="flex-1" />
           
-          <div className="flex gap-1">
-            <Button size="sm" variant="ghost">
-              <Icon name="ChevronLeft" size={16} />
-            </Button>
-            <Button size="sm" variant="ghost">
-              <Icon name="ChevronRight" size={16} />
-            </Button>
+          <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+            <Icon name="Filter" size={14} className="text-muted-foreground" />
+            <span className="text-xs font-medium">Показывать записи по услуге:</span>
+            <Select value={selectedServiceFilter} onValueChange={setSelectedServiceFilter}>
+              <SelectTrigger className="h-7 flex-1">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Все услуги</SelectItem>
+                {services.filter(s => s.id !== 'all').map(service => (
+                  <SelectItem key={service.id} value={service.id}>{service.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>

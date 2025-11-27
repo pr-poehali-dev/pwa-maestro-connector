@@ -299,27 +299,36 @@ const MasterServices = () => {
               </div>
             )}
 
-            <div className="space-y-3 p-3 border rounded-lg">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label>Требуется предоплата</Label>
-                  <p className="text-xs text-muted-foreground">Клиент оплачивает часть при записи</p>
+            <Card>
+              <CardContent className="p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="font-medium">Требуется предоплата</Label>
+                    <p className="text-xs text-muted-foreground">Клиент оплачивает часть при записи</p>
+                  </div>
+                  <Switch defaultChecked={selectedService?.prepaymentRequired ?? false} />
                 </div>
-                <Switch defaultChecked={selectedService?.prepaymentRequired ?? false} />
-              </div>
-              {selectedService?.prepaymentRequired && (
                 <div className="space-y-2">
                   <Label>Размер предоплаты (%)</Label>
-                  <Input 
-                    type="number" 
-                    min="10" 
-                    max="100" 
-                    placeholder="30" 
-                    defaultValue={selectedService?.prepaymentPercent}
-                  />
+                  <div className="flex items-center gap-2">
+                    <Input 
+                      type="number" 
+                      min="0" 
+                      max="100" 
+                      placeholder="30" 
+                      defaultValue={selectedService?.prepaymentPercent || 0}
+                      className="w-24"
+                    />
+                    <span className="text-sm text-muted-foreground">
+                      0% = без предоплаты
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Укажите 0, если предоплата не требуется
+                  </p>
                 </div>
-              )}
-            </div>
+              </CardContent>
+            </Card>
 
             <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
               <div>

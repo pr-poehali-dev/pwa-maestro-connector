@@ -12,8 +12,6 @@ const masterInfo = {
   name: 'Анна Петрова',
   avatar: '/placeholder.svg',
   category: 'Маникюр и педикюр',
-  rating: 4.9,
-  reviews: 127,
 };
 
 const service = {
@@ -53,50 +51,41 @@ const PublicBooking = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="bg-white border-b border-border py-4">
+    <div className="min-h-screen bg-background pb-8">
+      <header className="bg-white border-b border-border py-3 sticky top-0 z-10">
         <div className="container mx-auto px-4">
-          <h1 className="text-xl font-bold text-primary">Онлайн-запись</h1>
+          <h1 className="text-lg font-bold text-primary">Онлайн-запись</h1>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6 max-w-2xl">
-        <Card className="mb-6">
-          <CardContent className="p-6">
-            <div className="flex items-start gap-4">
-              <Avatar className="w-16 h-16">
+      <main className="container mx-auto px-4 py-4 max-w-lg">
+        <Card className="mb-4">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <Avatar className="w-12 h-12">
                 <AvatarImage src={masterInfo.avatar} />
                 <AvatarFallback>{masterInfo.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
               </Avatar>
               <div className="flex-1">
-                <h2 className="text-xl font-bold">{masterInfo.name}</h2>
+                <h2 className="text-lg font-bold">{masterInfo.name}</h2>
                 <p className="text-sm text-muted-foreground">{masterInfo.category}</p>
-                <div className="flex items-center gap-1 mt-2">
-                  <Icon name="Star" size={14} className="text-yellow-500 fill-yellow-500" />
-                  <span className="text-sm font-medium">{masterInfo.rating}</span>
-                  <span className="text-xs text-muted-foreground">({masterInfo.reviews})</span>
-                </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="mb-6">
-          <CardContent className="p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold">{service.name}</h3>
-                <p className="text-sm text-muted-foreground mt-1">{service.description}</p>
-                <div className="flex items-center gap-4 mt-3">
-                  <div className="flex items-center gap-1 text-sm">
-                    <Icon name="Clock" size={14} />
-                    <span>{service.duration} мин</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-sm font-semibold">
-                    <Icon name="Wallet" size={14} />
-                    <span>{service.price} ₽</span>
-                  </div>
-                </div>
+        <Card className="mb-4">
+          <CardContent className="p-4">
+            <h3 className="font-semibold mb-1">{service.name}</h3>
+            <p className="text-sm text-muted-foreground mb-3">{service.description}</p>
+            <div className="flex items-center gap-3 text-sm mb-3">
+              <div className="flex items-center gap-1">
+                <Icon name="Clock" size={14} />
+                <span>{service.duration} мин</span>
+              </div>
+              <div className="flex items-center gap-1 font-semibold">
+                <Icon name="Wallet" size={14} />
+                <span>{service.price} ₽</span>
               </div>
             </div>
 
@@ -134,11 +123,11 @@ const PublicBooking = () => {
           </CardContent>
         </Card>
 
-        <Card className="mb-6">
-          <CardContent className="p-6">
-            <h3 className="font-semibold mb-4">Выберите дату и время</h3>
+        <Card className="mb-4">
+          <CardContent className="p-4">
+            <h3 className="font-semibold mb-3">Выберите дату и время</h3>
 
-            <div className="mb-4">
+            <div className="mb-3">
               <Calendar
                 mode="single"
                 selected={selectedDate}
@@ -176,10 +165,10 @@ const PublicBooking = () => {
 
         {step === 2 && (
           <Card>
-            <CardContent className="p-6">
-              <h3 className="font-semibold mb-4">Ваши данные</h3>
+            <CardContent className="p-4">
+              <h3 className="font-semibold mb-3">Ваши данные</h3>
 
-              <div className="space-y-4 mb-6">
+              <div className="space-y-3 mb-4">
                 <div className="space-y-2">
                   <Label>Имя *</Label>
                   <Input
