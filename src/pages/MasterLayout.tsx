@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Icon from '@/components/ui/icon';
+import TactLogo from '@/components/TactLogo';
 import MasterDashboard from './MasterDashboard';
 import MasterCalendar from './MasterCalendar';
 import MasterClients from './MasterClients';
@@ -21,18 +23,28 @@ const notifications = [
 const MasterLayout = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   const unreadCount = notifications.filter(n => n.unread).length;
+  
+  const profile = {
+    name: 'Анна Петрова',
+    avatar: '/placeholder.svg',
+    category: 'Маникюр и педикюр',
+  };
 
   return (
     <div className="min-h-screen pb-20 bg-background">
       <header className="sticky top-0 z-40 bg-white border-b border-border shadow-sm">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-bold text-primary">МастерБук PRO</h1>
-              <p className="text-xs text-muted-foreground">Личный кабинет мастера</p>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <TactLogo size={32} />
+                <h1 className="text-lg font-bold text-primary">Tact</h1>
+              </div>
             </div>
-            <Popover open={showNotifications} onOpenChange={setShowNotifications}>
+            <div className="flex items-center gap-2">
+              <Popover open={showNotifications} onOpenChange={setShowNotifications}>
               <PopoverTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative">
                   <Icon name="Bell" size={20} />
@@ -69,6 +81,57 @@ const MasterLayout = () => {
                 </div>
               </PopoverContent>
             </Popover>
+            
+            <Popover open={showProfile} onOpenChange={setShowProfile}>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="sm" className="gap-2 px-2">
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src={profile.avatar} />
+                    <AvatarFallback>{profile.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                  </Avatar>
+                  <div className="hidden sm:block text-left">
+                    <p className="text-sm font-medium">{profile.name}</p>
+                  </div>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-72" align="end">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="w-14 h-14">
+                      <AvatarImage src={profile.avatar} />
+                      <AvatarFallback className="text-lg">{profile.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <p className="font-semibold">{profile.name}</p>
+                      <p className="text-xs text-muted-foreground">{profile.category}</p>
+                    </div>
+                  </div>
+                  <div className="border-t pt-2 space-y-1">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full justify-start"
+                      onClick={() => {
+                        setActiveTab('settings');
+                        setShowProfile(false);
+                      }}
+                    >
+                      <Icon name="Settings" size={16} className="mr-2" />
+                      Настройки профиля
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full justify-start text-destructive hover:text-destructive"
+                    >
+                      <Icon name="LogOut" size={16} className="mr-2" />
+                      Выйти
+                    </Button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+            </div>
           </div>
         </div>
       </header>

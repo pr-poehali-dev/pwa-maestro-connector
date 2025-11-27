@@ -79,6 +79,8 @@ const categories = ['Маникюр', 'Педикюр', 'Наращивание'
 const MasterServices = () => {
   const [selectedService, setSelectedService] = useState<any>(null);
   const [showNewService, setShowNewService] = useState(false);
+  const [isGroupService, setIsGroupService] = useState(false);
+  const [prepaymentRequired, setPrepaymentRequired] = useState(false);
 
   return (
     <div className="space-y-4 pb-20">
@@ -168,6 +170,8 @@ const MasterServices = () => {
         if (!open) {
           setShowNewService(false);
           setSelectedService(null);
+          setIsGroupService(false);
+          setPrepaymentRequired(false);
         }
       }}>
         <DialogContent className="max-w-lg">
@@ -283,10 +287,19 @@ const MasterServices = () => {
                 <Label>Групповая услуга</Label>
                 <p className="text-xs text-muted-foreground">Несколько клиентов одновременно</p>
               </div>
-              <Switch defaultChecked={selectedService?.isGroup ?? false} />
+              <Switch 
+                checked={selectedService ? selectedService.isGroup : isGroupService}
+                onCheckedChange={(checked) => {
+                  if (selectedService) {
+                    setSelectedService({ ...selectedService, isGroup: checked });
+                  } else {
+                    setIsGroupService(checked);
+                  }
+                }}
+              />
             </div>
 
-            {selectedService?.isGroup && (
+            {(selectedService?.isGroup || isGroupService) && (
               <div className="space-y-2">
                 <Label>Максимум участников</Label>
                 <Input 
@@ -306,27 +319,35 @@ const MasterServices = () => {
                     <Label className="font-medium">Требуется предоплата</Label>
                     <p className="text-xs text-muted-foreground">Клиент оплачивает часть при записи</p>
                   </div>
-                  <Switch defaultChecked={selectedService?.prepaymentRequired ?? false} />
+                  <Switch 
+                    checked={selectedService ? selectedService.prepaymentRequired : prepaymentRequired}
+                    onCheckedChange={(checked) => {
+                      if (selectedService) {
+                        setSelectedService({ ...selectedService, prepaymentRequired: checked });
+                      } else {
+                        setPrepaymentRequired(checked);
+                      }
+                    }}
+                  />
                 </div>
-                <div className="space-y-2">
-                  <Label>Размер предоплаты (%)</Label>
-                  <div className="flex items-center gap-2">
-                    <Input 
-                      type="number" 
-                      min="0" 
-                      max="100" 
-                      placeholder="30" 
-                      defaultValue={selectedService?.prepaymentPercent || 0}
-                      className="w-24"
-                    />
-                    <span className="text-sm text-muted-foreground">
-                      0% = без предоплаты
-                    </span>
+                {(selectedService?.prepaymentRequired || prepaymentRequired) && (
+                  <div className="space-y-2">
+                    <Label>Размер предоплаты (%)</Label>
+                    <div className="flex items-center gap-2">
+                      <Input 
+                        type="number" 
+                        min="10" 
+                        max="100" 
+                        placeholder="30" 
+                        defaultValue={selectedService?.prepaymentPercent || 30}
+                        className="w-24"
+                      />
+                      <span className="text-sm text-muted-foreground">
+                        от 10% до 100%
+                      </span>
+                    </div>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    Укажите 0, если предоплата не требуется
-                  </p>
-                </div>
+                )}
               </CardContent>
             </Card>
 

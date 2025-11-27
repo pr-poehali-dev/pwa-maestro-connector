@@ -32,18 +32,35 @@ const timeSlots = Array.from({ length: 12 }, (_, i) => {
 
 const weekDays = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'];
 
+const clients = [
+  { id: 'all', name: 'Все клиенты' },
+  { id: '1', name: 'Мария Соколова' },
+  { id: '2', name: 'Анна Иванова' },
+  { id: '3', name: 'Елена Петрова' },
+  { id: '4', name: 'Ольга Смирнова' },
+];
+
 const MasterCalendar = () => {
   const [view, setView] = useState<'day' | 'week' | 'month'>('day');
   const [showNewAppointment, setShowNewAppointment] = useState(false);
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedServiceFilter, setSelectedServiceFilter] = useState('all');
+  const [selectedClientFilter, setSelectedClientFilter] = useState('all');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [prepaymentPercent, setPrepaymentPercent] = useState(0);
 
-  const filteredAppointments = selectedServiceFilter === 'all' 
-    ? appointments 
-    : appointments.filter(a => a.service === services.find(s => s.id === selectedServiceFilter)?.name);
+  let filteredAppointments = appointments;
+  
+  if (selectedServiceFilter !== 'all') {
+    const serviceName = services.find(s => s.id === selectedServiceFilter)?.name;
+    filteredAppointments = filteredAppointments.filter(a => a.service === serviceName);
+  }
+  
+  if (selectedClientFilter !== 'all') {
+    const clientName = clients.find(c => c.id === selectedClientFilter)?.name;
+    filteredAppointments = filteredAppointments.filter(a => a.client === clientName);
+  }
 
   return (
     <div className="space-y-4 pb-20">
@@ -92,20 +109,33 @@ const MasterCalendar = () => {
             </div>
           </div>
           
-          <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
-            <Icon name="Filter" size={14} className="text-muted-foreground" />
-            <span className="text-xs font-medium">Показывать записи по услуге:</span>
-            <Select value={selectedServiceFilter} onValueChange={setSelectedServiceFilter}>
-              <SelectTrigger className="h-7 flex-1">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Все услуги</SelectItem>
-                {services.filter(s => s.id !== 'all').map(service => (
-                  <SelectItem key={service.id} value={service.id}>{service.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+              <Icon name="Filter" size={14} className="text-muted-foreground" />
+              <span className="text-xs font-medium">Услуга:</span>
+              <Select value={selectedServiceFilter} onValueChange={setSelectedServiceFilter}>
+                <SelectTrigger className="h-7 w-[180px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {services.map(service => (
+                    <SelectItem key={service.id} value={service.id}>{service.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              
+              <span className="text-xs font-medium ml-2">Клиент:</span>
+              <Select value={selectedClientFilter} onValueChange={setSelectedClientFilter}>
+                <SelectTrigger className="h-7 w-[180px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {clients.map(client => (
+                    <SelectItem key={client.id} value={client.id}>{client.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
       </div>
