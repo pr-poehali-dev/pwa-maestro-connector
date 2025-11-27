@@ -225,7 +225,12 @@ const Index = () => {
             <Icon name="User" size={64} className="mx-auto text-muted-foreground" />
             <h2 className="text-2xl font-bold">Профиль</h2>
             <p className="text-muted-foreground">Войдите, чтобы управлять записями</p>
-            <Button>Войти</Button>
+            <div className="flex flex-col gap-3 max-w-xs mx-auto">
+              <Button>Войти как клиент</Button>
+              <Button variant="outline" onClick={() => window.location.href = '/master'}>
+                Войти как мастер
+              </Button>
+            </div>
           </div>
         </main>
       )}
