@@ -29,18 +29,72 @@ const MasterSettings = () => {
   });
 
   const [subscription, setSubscription] = useState({
-    plan: 'pro',
+    plan: 'profi',
     status: 'active',
     expiresAt: '2024-12-27',
     price: 990,
-    features: [
-      'Неограниченное количество записей',
-      'Автоматические напоминания',
-      'Статистика и аналитика',
-      'Онлайн-оплаты',
-      'Приоритетная поддержка',
-    ],
+    bookingsUsed: 32,
+    bookingsLimit: 100,
   });
+
+  const plans = [
+    {
+      id: 'start',
+      name: 'Старт',
+      price: 0,
+      bookings: 10,
+      features: [
+        'До 10 записей в месяц',
+        'Базовый календарь',
+        'База клиентов',
+        'Email поддержка',
+      ],
+    },
+    {
+      id: 'basic',
+      name: 'Базовый',
+      price: 490,
+      bookings: 50,
+      features: [
+        'До 50 записей в месяц',
+        'Календарь день/неделя',
+        'Автоматические напоминания',
+        'Базовая статистика',
+        'Приоритетная поддержка',
+      ],
+    },
+    {
+      id: 'profi',
+      name: 'Профи',
+      price: 990,
+      bookings: 100,
+      popular: true,
+      features: [
+        'До 100 записей в месяц',
+        'Полный календарь (день/неделя/месяц)',
+        'Групповые записи',
+        'Онлайн-оплаты',
+        'Расширенная аналитика',
+        'Публичные ссылки для записи',
+        'Telegram-бот уведомлений',
+      ],
+    },
+    {
+      id: 'boss',
+      name: 'Босс',
+      price: 1490,
+      bookings: 999,
+      features: [
+        'Более 100 записей в месяц',
+        'Все возможности Профи',
+        'API доступ',
+        'Персональный менеджер',
+        'Приоритетная техподдержка 24/7',
+        'Белый лейбл (без брендинга)',
+        'Кастомизация интерфейса',
+      ],
+    },
+  ];
 
   return (
     <div className="space-y-6 pb-20">
@@ -276,7 +330,7 @@ const MasterSettings = () => {
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h3 className="text-xl font-bold">Тариф PRO</h3>
+                  <h3 className="text-xl font-bold">Тариф {plans.find(p => p.id === subscription.plan)?.name}</h3>
                   <p className="text-sm text-muted-foreground">Подписка активна</p>
                 </div>
                 <Badge variant="default" className="text-sm">Активна</Badge>
@@ -287,8 +341,21 @@ const MasterSettings = () => {
                 <span className="text-muted-foreground">/ месяц</span>
               </div>
 
+              <div className="mb-6">
+                <div className="flex items-center justify-between text-sm mb-2">
+                  <span className="text-muted-foreground">Использовано записей в этом месяце:</span>
+                  <span className="font-medium">{subscription.bookingsUsed} / {subscription.bookingsLimit}</span>
+                </div>
+                <div className="w-full bg-muted rounded-full h-2">
+                  <div 
+                    className="bg-primary rounded-full h-2 transition-all" 
+                    style={{ width: `${(subscription.bookingsUsed / subscription.bookingsLimit) * 100}%` }}
+                  />
+                </div>
+              </div>
+
               <div className="space-y-3 mb-6">
-                {subscription.features.map((feature, idx) => (
+                {plans.find(p => p.id === subscription.plan)?.features.map((feature, idx) => (
                   <div key={idx} className="flex items-center gap-2">
                     <Icon name="Check" className="text-primary" size={16} />
                     <span className="text-sm">{feature}</span>
@@ -338,65 +405,55 @@ const MasterSettings = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Другие тарифы</CardTitle>
+              <CardTitle className="text-base">Все тарифы</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="p-4 border rounded-lg">
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <h4 className="font-semibold">Базовый</h4>
-                    <p className="text-2xl font-bold mt-1">490 ₽ <span className="text-sm font-normal text-muted-foreground">/ месяц</span></p>
+              {plans.map((plan) => (
+                <div 
+                  key={plan.id} 
+                  className={`p-4 rounded-lg ${
+                    plan.popular 
+                      ? 'border-2 border-primary bg-primary/5' 
+                      : subscription.plan === plan.id
+                      ? 'border-2 border-primary/50'
+                      : 'border'
+                  }`}
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-semibold">{plan.name}</h4>
+                        {plan.popular && <Badge>Популярный</Badge>}
+                        {subscription.plan === plan.id && <Badge variant="outline">Текущий</Badge>}
+                      </div>
+                      <p className="text-2xl font-bold mt-1">
+                        {plan.price === 0 ? 'Бесплатно' : `${plan.price} ₽`} 
+                        {plan.price > 0 && <span className="text-sm font-normal text-muted-foreground"> / месяц</span>}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {plan.bookings === 999 ? 'Более 100' : `До ${plan.bookings}`} записей в месяц
+                      </p>
+                    </div>
                   </div>
+                  <ul className="space-y-2 mb-4">
+                    {plan.features.map((feature, idx) => (
+                      <li key={idx} className="text-sm flex items-center gap-2">
+                        <Icon name="Check" size={14} className="text-primary" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  {subscription.plan !== plan.id && (
+                    <Button 
+                      variant={plan.popular ? 'default' : 'outline'} 
+                      className="w-full" 
+                      size="sm"
+                    >
+                      Перейти на {plan.name}
+                    </Button>
+                  )}
                 </div>
-                <ul className="space-y-2 mb-4">
-                  <li className="text-sm flex items-center gap-2">
-                    <Icon name="Check" size={14} className="text-primary" />
-                    До 50 записей в месяц
-                  </li>
-                  <li className="text-sm flex items-center gap-2">
-                    <Icon name="Check" size={14} className="text-primary" />
-                    Базовая аналитика
-                  </li>
-                  <li className="text-sm flex items-center gap-2">
-                    <Icon name="Check" size={14} className="text-primary" />
-                    Поддержка email
-                  </li>
-                </ul>
-                <Button variant="outline" className="w-full" size="sm">
-                  Перейти на Базовый
-                </Button>
-              </div>
-
-              <div className="p-4 border-2 border-primary rounded-lg bg-primary/5">
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <h4 className="font-semibold">Бизнес</h4>
-                    <p className="text-2xl font-bold mt-1">1990 ₽ <span className="text-sm font-normal text-muted-foreground">/ месяц</span></p>
-                  </div>
-                  <Badge>Популярный</Badge>
-                </div>
-                <ul className="space-y-2 mb-4">
-                  <li className="text-sm flex items-center gap-2">
-                    <Icon name="Check" size={14} className="text-primary" />
-                    Неограниченные записи
-                  </li>
-                  <li className="text-sm flex items-center gap-2">
-                    <Icon name="Check" size={14} className="text-primary" />
-                    Расширенная аналитика
-                  </li>
-                  <li className="text-sm flex items-center gap-2">
-                    <Icon name="Check" size={14} className="text-primary" />
-                    API доступ
-                  </li>
-                  <li className="text-sm flex items-center gap-2">
-                    <Icon name="Check" size={14} className="text-primary" />
-                    Персональный менеджер
-                  </li>
-                </ul>
-                <Button className="w-full" size="sm">
-                  Перейти на Бизнес
-                </Button>
-              </div>
+              ))}
             </CardContent>
           </Card>
         </TabsContent>

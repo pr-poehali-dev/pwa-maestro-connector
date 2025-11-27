@@ -1,0 +1,111 @@
+:root {
+  /* Brand Colors */
+  --tact-primary: #2a4b8c;
+  --tact-accent: #00c9b1;
+  --tact-surface: #ffffff;
+  --tact-background: #fafbfc;
+
+  /* Grayscale */
+  --tact-gray-50: #fafbfc;
+  --tact-gray-100: #f5f7fa;
+  --tact-gray-200: #edf1f7;
+  --tact-gray-300: #e4e9f2;
+  --tact-gray-400: #8f9bb3;
+  --tact-gray-600: #51596c;
+  --tact-gray-800: #1a1b25;
+
+  /* Semantic Colors */
+  --tact-success: #00d68f;
+  --tact-warning: #ffaa00;
+  --tact-error: #ff3d71;
+  --tact-info: #0095ff;
+
+  /* Typography Scale */
+  --tact-font-family:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Font Sizes */
+  --tact-text-xs: 12px;
+  --tact-text-sm: 13px;
+  --tact-text-base: 15px;
+  --tact-text-lg: 17px;
+  --tact-text-xl: 19px;
+  --tact-text-2xl: 22px;
+  --tact-text-3xl: 28px;
+
+  /* Font Weights */
+  --tact-font-regular: 400;
+  --tact-font-medium: 500;
+  --tact-font-semibold: 600;
+  --tact-font-bold: 700;
+
+  /* Line Heights */
+  --tact-leading-tight: 1.2;
+  --tact-leading-normal: 1.5;
+  --tact-leading-relaxed: 1.75;
+
+  /* Spacing Scale (8px base) */
+  --tact-space-1: 4px;
+  --tact-space-2: 8px;
+  --tact-space-3: 12px;
+  --tact-space-4: 16px;
+  --tact-space-5: 20px;
+  --tact-space-6: 24px;
+  --tact-space-8: 32px;
+  --tact-space-10: 40px;
+  --tact-space-12: 48px;
+  --tact-space-16: 64px;
+
+  /* Border Radius */
+  --tact-radius-sm: 8px;
+  --tact-radius-md: 12px;
+  --tact-radius-lg: 16px;
+  --tact-radius-xl: 20px;
+  --tact-radius-full: 9999px;
+
+  /* Shadows */
+  --tact-shadow-sm: 0 1px 3px rgba(26, 27, 37, 0.04);
+  --tact-shadow-md: 0 2px 8px rgba(26, 27, 37, 0.08);
+  --tact-shadow-lg: 0 8px 24px rgba(26, 27, 37, 0.12);
+  --tact-shadow-xl: 0 16px 48px rgba(26, 27, 37, 0.16);
+
+  /* Animation */
+  --tact-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --tact-transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --tact-transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Z-Index Scale */
+  --tact-z-dropdown: 1000;
+  --tact-z-sticky: 1020;
+  --tact-z-fixed: 1030;
+  --tact-z-modal-backdrop: 1040;
+  --tact-z-modal: 1050;
+  --tact-z-popover: 1060;
+  --tact-z-tooltip: 1070;
+}
+
+/* Component-specific tokens */
+:root {
+  /* Buttons */
+  --tact-button-height: 48px;
+  --tact-button-height-sm: 40px;
+  --tact-button-height-lg: 56px;
+  --tact-button-padding-x: 24px;
+  --tact-button-padding-x-sm: 16px;
+  --tact-button-padding-x-lg: 32px;
+
+  /* Inputs */
+  --tact-input-height: 48px;
+  --tact-input-padding-x: 16px;
+  --tact-input-border: 1px solid var(--tact-gray-300);
+  --tact-input-border-focus: 2px solid var(--tact-primary);
+
+  /* Cards */
+  --tact-card-padding: 20px;
+  --tact-card-radius: var(--tact-radius-lg);
+  --tact-card-shadow: var(--tact-shadow-sm);
+
+  /* Navigation */
+  --tact-nav-height: 64px;
+  --tact-bottom-nav-height: 72px;
+}
