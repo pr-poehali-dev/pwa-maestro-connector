@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Icon from '@/components/ui/icon';
 import SwipeCard from '@/components/SwipeCard';
+import ShareDialog from '@/components/ShareDialog';
 
 const appointments = [
   { id: 1, time: '09:00', client: 'Мария Соколова', service: 'Маникюр с покрытием', duration: 60, status: 'confirmed', date: '2024-11-27' },
@@ -60,6 +61,7 @@ const MasterCalendar = () => {
   const [appointmentToRepeat, setAppointmentToRepeat] = useState<typeof appointments[0] | null>(null);
   const [selectedAppointment, setSelectedAppointment] = useState<typeof appointments[0] | null>(null);
   const [appointmentToMove, setAppointmentToMove] = useState<typeof appointments[0] | null>(null);
+  const [showCalendarShare, setShowCalendarShare] = useState(false);
 
   const handleCancelAppointment = (id: number) => {
     setAppointmentToCancel(id);
@@ -119,6 +121,13 @@ const MasterCalendar = () => {
             <div className="flex-1" />
             
             <div className="flex gap-1">
+              <Button 
+                size="sm" 
+                variant="ghost"
+                onClick={() => setShowCalendarShare(true)}
+              >
+                <Icon name="Share2" size={14} />
+              </Button>
               <Button size="sm" variant="ghost">
                 <Icon name="ChevronLeft" size={16} />
               </Button>
@@ -700,6 +709,14 @@ const MasterCalendar = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      <ShareDialog
+        title="Мой календарь записей"
+        description="Поделитесь своим календарем с клиентами"
+        url={`${window.location.origin}/calendar/master1`}
+        open={showCalendarShare}
+        onClose={() => setShowCalendarShare(false)}
+      />
     </div>
   );
 };

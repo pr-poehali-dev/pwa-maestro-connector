@@ -10,7 +10,11 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
 
-const MasterSettings = () => {
+interface MasterSettingsProps {
+  onNavigate?: (tab: string) => void;
+}
+
+const MasterSettings = ({ onNavigate }: MasterSettingsProps) => {
   const [profile, setProfile] = useState({
     name: 'Анна Петрова',
     phone: '+7 (999) 123-45-67',
@@ -197,6 +201,25 @@ const MasterSettings = () => {
                 <Label>Сайт / Портфолио</Label>
                 <Input placeholder="https://your-website.com" />
               </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Дополнительные настройки</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Button 
+                variant="outline" 
+                className="w-full justify-between"
+                onClick={() => onNavigate?.('notifications')}
+              >
+                <div className="flex items-center gap-2">
+                  <Icon name="Bell" size={16} />
+                  <span>Уведомления и напоминания</span>
+                </div>
+                <Icon name="ChevronRight" size={16} />
+              </Button>
             </CardContent>
           </Card>
 

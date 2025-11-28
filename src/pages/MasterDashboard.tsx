@@ -256,11 +256,11 @@ const MasterDashboard = ({ onNavigate }: MasterDashboardProps) => {
 
       <Button 
         size="lg" 
-        className="fixed bottom-20 left-1/2 -translate-x-1/2 z-40 shadow-lg w-[calc(100%-2rem)] max-w-md"
+        className="fixed bottom-20 right-4 z-40 shadow-lg md:h-14 md:w-14 md:rounded-full md:p-0 w-[calc(100%-2rem)] left-4 md:left-auto"
         onClick={() => onNavigate('calendar')}
       >
-        <Icon name="Plus" size={20} className="mr-2" />
-        Новая запись
+        <Icon name="Plus" size={20} className="md:mr-0 mr-2" />
+        <span className="md:hidden">Новая запись</span>
       </Button>
     </div>
   );

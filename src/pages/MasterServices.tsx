@@ -94,6 +94,7 @@ const MasterServices = () => {
   const [serviceToDelete, setServiceToDelete] = useState<number | null>(null);
   const [serviceToShare, setServiceToShare] = useState<any>(null);
   const [editingService, setEditingService] = useState<any>(null);
+  const [serviceImage, setServiceImage] = useState<string | null>(null);
 
   const handleDuplicateService = (service: any) => {
     setSelectedService({ ...service, name: `${service.name} (копия)`, id: Date.now() });
@@ -127,7 +128,7 @@ const MasterServices = () => {
             onSwipeLeft={() => setServiceToDelete(service.id)}
             onSwipeRight={() => setEditingService(service)}
             leftAction={{ icon: 'Trash2', label: 'Удалить', color: '#ef4444' }}
-            rightAction={{ icon: 'Edit', label: 'Изменить', color: '#3b82f6' }}
+            rightAction={{ icon: 'Edit', label: 'Редактировать', color: '#3b82f6' }}
           >
             <Card 
               className="hover:shadow-md transition-shadow cursor-pointer"
@@ -135,6 +136,15 @@ const MasterServices = () => {
             >
               <CardContent className="p-4">
                 <div className="flex items-start justify-between gap-4">
+                  {(service as any).image && (
+                    <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                      <img 
+                        src={(service as any).image} 
+                        alt={service.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
                   <div className="flex-1 space-y-2">
                     <div className="flex items-center gap-2">
                       <h4 className="font-semibold">{service.name}</h4>
@@ -189,7 +199,7 @@ const MasterServices = () => {
                           setEditingService(service);
                         }}>
                           <Icon name="Edit" size={14} className="mr-2" />
-                          Изменить
+                          Редактировать
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={(e) => {
                           e.stopPropagation();
@@ -241,6 +251,49 @@ const MasterServices = () => {
                 placeholder="Например: Маникюр с покрытием" 
                 defaultValue={editingService?.name || selectedService?.name}
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Изображение услуги (опционально)</Label>
+              <div className="flex gap-2">
+                {serviceImage || editingService?.image || selectedService?.image ? (
+                  <div className="relative w-full h-32 rounded-lg border overflow-hidden">
+                    <img 
+                      src={serviceImage || editingService?.image || selectedService?.image} 
+                      alt="Service" 
+                      className="w-full h-full object-cover"
+                    />
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      className="absolute top-2 right-2"
+                      onClick={() => setServiceImage(null)}
+                    >
+                      <Icon name="Trash2" size={14} />
+                    </Button>
+                  </div>
+                ) : (
+                  <label className="w-full h-32 border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-muted/50 transition-colors">
+                    <Icon name="Upload" size={24} className="text-muted-foreground mb-2" />
+                    <span className="text-sm text-muted-foreground">Загрузить изображение</span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setServiceImage(reader.result as string);
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                    />
+                  </label>
+                )}
+              </div>
             </div>
 
             <div className="space-y-2">
