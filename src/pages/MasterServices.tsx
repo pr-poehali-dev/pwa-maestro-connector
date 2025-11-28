@@ -125,9 +125,9 @@ const MasterServices = () => {
           <SwipeCard
             key={service.id}
             onSwipeLeft={() => setServiceToDelete(service.id)}
-            onSwipeRight={() => handleDuplicateService(service)}
+            onSwipeRight={() => setEditingService(service)}
             leftAction={{ icon: 'Trash2', label: 'Удалить', color: '#ef4444' }}
-            rightAction={{ icon: 'Copy', label: 'Копировать', color: '#3b82f6' }}
+            rightAction={{ icon: 'Edit', label: 'Изменить', color: '#3b82f6' }}
           >
             <Card 
               className="hover:shadow-md transition-shadow cursor-pointer"
@@ -218,17 +218,20 @@ const MasterServices = () => {
         ))}
       </div>
 
-      <Dialog open={showNewService || !!selectedService} onOpenChange={(open) => {
+      <Dialog open={showNewService || !!selectedService || !!editingService} onOpenChange={(open) => {
         if (!open) {
           setShowNewService(false);
           setSelectedService(null);
+          setEditingService(null);
           setIsGroupService(false);
           setPrepaymentRequired(false);
         }
       }}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>{selectedService ? 'Редактировать услугу' : 'Новая услуга'}</DialogTitle>
+            <DialogTitle>
+              {editingService ? 'Редактировать услугу' : selectedService ? 'Копировать услугу' : 'Новая услуга'}
+            </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4">
@@ -236,13 +239,13 @@ const MasterServices = () => {
               <Label>Название услуги</Label>
               <Input 
                 placeholder="Например: Маникюр с покрытием" 
-                defaultValue={selectedService?.name}
+                defaultValue={editingService?.name || selectedService?.name}
               />
             </div>
 
             <div className="space-y-2">
               <Label>Категория</Label>
-              <Select defaultValue={selectedService?.category}>
+              <Select defaultValue={editingService?.category || selectedService?.category}>
                 <SelectTrigger>
                   <SelectValue placeholder="Выберите категорию" />
                 </SelectTrigger>
@@ -256,7 +259,7 @@ const MasterServices = () => {
 
             <div className="space-y-2">
               <Label>Тип услуги</Label>
-              <Select defaultValue={selectedService?.type || 'offline'}>
+              <Select defaultValue={editingService?.type || selectedService?.type || 'offline'}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -277,22 +280,22 @@ const MasterServices = () => {
               </Select>
             </div>
 
-            {selectedService?.type === 'offline' && (
+            {(editingService?.type === 'offline' || selectedService?.type === 'offline') && (
               <div className="space-y-2">
                 <Label>Адрес встречи</Label>
                 <Input 
                   placeholder="г. Москва, ул. Примерная, д. 1" 
-                  defaultValue={selectedService?.address}
+                  defaultValue={editingService?.address || selectedService?.address}
                 />
               </div>
             )}
 
-            {selectedService?.type === 'online' && (
+            {(editingService?.type === 'online' || selectedService?.type === 'online') && (
               <div className="space-y-2">
                 <Label>Ссылка на видеовстречу (опционально)</Label>
                 <Input 
                   placeholder="https://zoom.us/j/..." 
-                  defaultValue={selectedService?.videoLink}
+                  defaultValue={editingService?.videoLink || selectedService?.videoLink}
                 />
               </div>
             )}
@@ -300,7 +303,7 @@ const MasterServices = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Длительность (минут)</Label>
-                <Select defaultValue={selectedService?.duration.toString()}>
+                <Select defaultValue={(editingService?.duration || selectedService?.duration)?.toString()}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -320,7 +323,7 @@ const MasterServices = () => {
                 <Input 
                   type="number" 
                   placeholder="1500" 
-                  defaultValue={selectedService?.price}
+                  defaultValue={editingService?.price || selectedService?.price}
                 />
               </div>
             </div>
@@ -330,7 +333,7 @@ const MasterServices = () => {
               <Textarea 
                 placeholder="Краткое описание услуги для клиентов" 
                 rows={3}
-                defaultValue={selectedService?.description}
+                defaultValue={editingService?.description || selectedService?.description}
               />
             </div>
 
@@ -340,7 +343,7 @@ const MasterServices = () => {
                 <p className="text-xs text-muted-foreground">Несколько клиентов одновременно</p>
               </div>
               <Switch 
-                checked={selectedService ? selectedService.isGroup : isGroupService}
+                checked={editingService ? editingService.isGroup : selectedService ? selectedService.isGroup : isGroupService}
                 onCheckedChange={(checked) => {
                   if (selectedService) {
                     setSelectedService({ ...selectedService, isGroup: checked });
@@ -471,21 +474,10 @@ const MasterServices = () => {
       <ShareDialog
         title={serviceToShare?.name || ''}
         description="Поделитесь услугой с клиентами"
-        url={`https://tact.app/book/master1/${serviceToShare?.id}`}
+        url={`${window.location.origin}/service/master1/${serviceToShare?.id}`}
+        previewUrl={`${window.location.origin}/service/master1/${serviceToShare?.id}`}
         open={!!serviceToShare}
         onClose={() => setServiceToShare(null)}
-        preview={
-          serviceToShare && (
-            <div className="space-y-2">
-              <h4 className="font-semibold">{serviceToShare.name}</h4>
-              <p className="text-sm text-muted-foreground">{serviceToShare.description}</p>
-              <div className="flex items-center gap-4 text-sm">
-                <span>{serviceToShare.duration} мин</span>
-                <span className="font-semibold">{serviceToShare.price} ₽</span>
-              </div>
-            </div>
-          )
-        }
       />
 
       <Dialog open={!!serviceToDelete} onOpenChange={(open) => !open && setServiceToDelete(null)}>

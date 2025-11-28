@@ -58,6 +58,8 @@ const MasterCalendar = () => {
   const [prepaymentPercent, setPrepaymentPercent] = useState(0);
   const [appointmentToCancel, setAppointmentToCancel] = useState<number | null>(null);
   const [appointmentToRepeat, setAppointmentToRepeat] = useState<typeof appointments[0] | null>(null);
+  const [selectedAppointment, setSelectedAppointment] = useState<typeof appointments[0] | null>(null);
+  const [appointmentToMove, setAppointmentToMove] = useState<typeof appointments[0] | null>(null);
 
   const handleCancelAppointment = (id: number) => {
     setAppointmentToCancel(id);
@@ -179,7 +181,10 @@ const MasterCalendar = () => {
                           rightAction={{ icon: 'Copy', label: 'Повторить', color: '#3b82f6' }}
                           className="h-full"
                         >
-                          <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
+                          <Card 
+                            className="h-full hover:shadow-md transition-shadow cursor-pointer"
+                            onClick={() => setSelectedAppointment(appointment)}
+                          >
                             <CardContent className="p-3">
                               <div className="flex items-center justify-between gap-2">
                                 <div className="flex-1 min-w-0">
@@ -195,25 +200,29 @@ const MasterCalendar = () => {
                                   </div>
                                 </div>
                                 <div className="flex gap-1">
-                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
+                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={(e) => e.stopPropagation()}>
                                     <Icon name="Phone" size={12} />
                                   </Button>
-                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
+                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={(e) => e.stopPropagation()}>
                                     <Icon name="MessageCircle" size={12} />
                                   </Button>
                                   <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                      <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
+                                      <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={(e) => e.stopPropagation()}>
                                         <Icon name="MoreVertical" size={12} />
                                       </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
-                                      <DropdownMenuItem onClick={() => handleRepeatAppointment(appointment)}>
+                                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setAppointmentToMove(appointment); }}>
+                                        <Icon name="Calendar" size={14} className="mr-2" />
+                                        Перенести запись
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleRepeatAppointment(appointment); }}>
                                         <Icon name="Copy" size={14} className="mr-2" />
                                         Повторить запись
                                       </DropdownMenuItem>
                                       <DropdownMenuItem 
-                                        onClick={() => handleCancelAppointment(appointment.id)}
+                                        onClick={(e) => { e.stopPropagation(); handleCancelAppointment(appointment.id); }}
                                         className="text-destructive"
                                       >
                                         <Icon name="X" size={14} className="mr-2" />
@@ -265,18 +274,25 @@ const MasterCalendar = () => {
                   <div key={time} className="grid grid-cols-8 gap-2 mb-2">
                     <div className="text-xs text-muted-foreground font-medium py-2">{time}</div>
                     {weekDays.map((_, dayIdx) => {
-                      const hasAppointment = dayIdx === 2 && filteredAppointments.some(a => a.time === time);
+                      const appointment = dayIdx === 2 ? filteredAppointments.find(a => a.time === time) : null;
                       return (
                         <div
                           key={dayIdx}
-                          className={`min-h-12 rounded border ${
-                            hasAppointment
-                              ? 'bg-primary/10 border-primary/30 p-1'
+                          className={`min-h-14 rounded border ${
+                            appointment
+                              ? 'bg-primary/10 border-primary/30 p-1 cursor-pointer hover:shadow-md transition-shadow'
                               : 'bg-muted/30 hover:bg-muted/50 cursor-pointer'
                           }`}
+                          onClick={() => appointment && setSelectedAppointment(appointment)}
                         >
-                          {hasAppointment && (
-                            <p className="text-xs font-medium truncate">Занято</p>
+                          {appointment && (
+                            <div className="space-y-0.5">
+                              <p className="text-[10px] font-semibold truncate leading-tight">{appointment.client}</p>
+                              <p className="text-[9px] text-muted-foreground truncate leading-tight">{appointment.service}</p>
+                              <Badge variant="outline" className="text-[8px] h-3 px-1 py-0">
+                                {appointment.duration}м
+                              </Badge>
+                            </div>
                           )}
                         </div>
                       );
@@ -312,7 +328,11 @@ const MasterCalendar = () => {
               <p className="text-sm font-medium">Записи на выбранный день:</p>
               <div className="space-y-2">
                 {filteredAppointments.slice(0, 3).map((appointment) => (
-                  <Card key={appointment.id}>
+                  <Card 
+                    key={appointment.id}
+                    className="cursor-pointer hover:shadow-md transition-shadow"
+                    onClick={() => setSelectedAppointment(appointment)}
+                  >
                     <CardContent className="p-3 flex items-center justify-between">
                       <div>
                         <p className="font-medium text-sm">{appointment.client}</p>
@@ -524,6 +544,158 @@ const MasterCalendar = () => {
                   Создать запись
                 </Button>
               </DialogFooter>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!appointmentToMove} onOpenChange={(open) => !open && setAppointmentToMove(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Перенести запись</DialogTitle>
+            <DialogDescription>
+              Выберите новую дату и время для записи
+            </DialogDescription>
+          </DialogHeader>
+          
+          {appointmentToMove && (
+            <div className="space-y-4">
+              <div className="p-3 bg-muted rounded-lg">
+                <p className="text-sm font-medium">Клиент: {appointmentToMove.client}</p>
+                <p className="text-sm text-muted-foreground">Услуга: {appointmentToMove.service}</p>
+                <p className="text-sm text-muted-foreground">Длительность: {appointmentToMove.duration} мин</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Новая дата</Label>
+                  <Input type="date" defaultValue={appointmentToMove.date} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Новое время</Label>
+                  <Select defaultValue={appointmentToMove.time}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {timeSlots.map(time => (
+                        <SelectItem key={time} value={time}>{time}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setAppointmentToMove(null)}>
+                  Отмена
+                </Button>
+                <Button onClick={() => setAppointmentToMove(null)}>
+                  Перенести
+                </Button>
+              </DialogFooter>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!selectedAppointment} onOpenChange={(open) => !open && setSelectedAppointment(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Детали записи</DialogTitle>
+          </DialogHeader>
+
+          {selectedAppointment && (
+            <div className="space-y-4">
+              <div className="p-4 bg-muted rounded-lg space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-lg font-bold">{selectedAppointment.client}</p>
+                    <p className="text-sm text-muted-foreground">{selectedAppointment.service}</p>
+                  </div>
+                  <Badge variant={selectedAppointment.status === 'confirmed' ? 'default' : 'secondary'}>
+                    {selectedAppointment.status === 'confirmed' ? 'Подтверждено' : 'Ожидание'}
+                  </Badge>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 pt-3 border-t">
+                  <div className="flex items-center gap-2">
+                    <Icon name="Calendar" size={16} className="text-muted-foreground" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Дата</p>
+                      <p className="text-sm font-medium">27 ноября 2024</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Icon name="Clock" size={16} className="text-muted-foreground" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Время</p>
+                      <p className="text-sm font-medium">{selectedAppointment.time}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Icon name="Timer" size={16} className="text-muted-foreground" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Длительность</p>
+                      <p className="text-sm font-medium">{selectedAppointment.duration} мин</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Icon name="Wallet" size={16} className="text-muted-foreground" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Стоимость</p>
+                      <p className="text-sm font-medium">1500 ₽</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <Button variant="outline" className="flex-1" onClick={() => { setSelectedAppointment(null); /* Call client */ }}>
+                  <Icon name="Phone" size={16} className="mr-2" />
+                  Позвонить
+                </Button>
+                <Button variant="outline" className="flex-1" onClick={() => { setSelectedAppointment(null); /* Message client */ }}>
+                  <Icon name="MessageCircle" size={16} className="mr-2" />
+                  Написать
+                </Button>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => {
+                    setAppointmentToMove(selectedAppointment);
+                    setSelectedAppointment(null);
+                  }}
+                >
+                  <Icon name="Calendar" size={16} className="mr-2" />
+                  Перенести запись
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => {
+                    handleRepeatAppointment(selectedAppointment);
+                    setSelectedAppointment(null);
+                  }}
+                >
+                  <Icon name="Copy" size={16} className="mr-2" />
+                  Повторить запись
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start text-destructive hover:text-destructive"
+                  onClick={() => {
+                    handleCancelAppointment(selectedAppointment.id);
+                    setSelectedAppointment(null);
+                  }}
+                >
+                  <Icon name="X" size={16} className="mr-2" />
+                  Отменить запись
+                </Button>
+              </div>
             </div>
           )}
         </DialogContent>

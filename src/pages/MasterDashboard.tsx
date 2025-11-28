@@ -87,15 +87,9 @@ interface MasterDashboardProps {
 const MasterDashboard = ({ onNavigate }: MasterDashboardProps) => {
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">Добро пожаловать, Анна!</h2>
-          <p className="text-muted-foreground">Вот что происходит сегодня</p>
-        </div>
-        <Avatar className="w-12 h-12">
-          <AvatarImage src="/placeholder.svg" />
-          <AvatarFallback>АП</AvatarFallback>
-        </Avatar>
+      <div>
+        <h2 className="text-2xl font-bold">Добро пожаловать, Анна!</h2>
+        <p className="text-muted-foreground">Вот что происходит сегодня</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

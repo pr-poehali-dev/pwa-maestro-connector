@@ -206,7 +206,7 @@ const Index = () => {
             <div className="flex flex-col gap-3 max-w-xs mx-auto">
               <Button>Войти как клиент</Button>
               <Button variant="outline" onClick={() => window.location.href = '/master'}>
-                Войти как мастер
+                Я мастер
               </Button>
             </div>
           </div>
