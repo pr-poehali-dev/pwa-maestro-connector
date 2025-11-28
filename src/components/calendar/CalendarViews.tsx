@@ -68,12 +68,12 @@ const CalendarViews = ({
                 const appointment = filteredAppointments.find(a => a.time === time);
                 
                 return (
-                  <div key={time} className="flex items-stretch min-h-16 border-b last:border-b-0">
-                    <div className="w-16 flex items-center justify-center text-sm text-muted-foreground font-medium border-r">
+                  <div key={time} className="flex items-stretch min-h-14 sm:min-h-16 border-b last:border-b-0">
+                    <div className="w-12 sm:w-16 flex items-center justify-center text-xs sm:text-sm text-muted-foreground font-medium border-r">
                       {time}
                     </div>
                     
-                    <div className="flex-1 p-2">
+                    <div className="flex-1 p-1.5 sm:p-2">
                       {appointment ? (
                         <SwipeCard
                           onSwipeLeft={() => onCancelAppointment(appointment.id)}
@@ -86,32 +86,32 @@ const CalendarViews = ({
                             className="h-full hover:shadow-md transition-shadow cursor-pointer"
                             onClick={() => onAppointmentClick(appointment)}
                           >
-                            <CardContent className="p-3">
-                              <div className="flex items-center justify-between gap-2">
+                            <CardContent className="p-2 sm:p-3">
+                              <div className="flex items-center justify-between gap-1.5 sm:gap-2">
                                 <div className="flex-1 min-w-0">
-                                  <p className="font-semibold text-sm truncate">{appointment.client}</p>
-                                  <p className="text-xs text-muted-foreground truncate">{appointment.service}</p>
-                                  <div className="flex items-center gap-2 mt-1 flex-wrap">
-                                    <Badge variant="outline" className="text-xs">
-                                      <Icon name="Clock" size={10} className="mr-1" />
+                                  <p className="font-semibold text-xs sm:text-sm truncate">{appointment.client}</p>
+                                  <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{appointment.service}</p>
+                                  <div className="flex items-center gap-1 sm:gap-2 mt-1 flex-wrap">
+                                    <Badge variant="outline" className="text-[9px] sm:text-xs px-1 py-0 h-4 sm:h-5">
+                                      <Icon name="Clock" size={8} className="mr-0.5 sm:mr-1" />
                                       {appointment.duration} мин
                                     </Badge>
-                                    <Badge variant="outline" className="text-xs">
-                                      <Icon name="MapPin" size={10} className="mr-1" />
+                                    <Badge variant="outline" className="text-[9px] sm:text-xs px-1 py-0 h-4 sm:h-5 hidden sm:inline-flex">
+                                      <Icon name="MapPin" size={8} className="mr-0.5 sm:mr-1" />
                                       Оффлайн
                                     </Badge>
                                     {(appointment as any).prepaymentRequired && (
-                                      <Badge variant="secondary" className="text-xs">
-                                        <Icon name="CreditCard" size={10} className="mr-1" />
+                                      <Badge variant="secondary" className="text-[9px] sm:text-xs px-1 py-0 h-4 sm:h-5">
+                                        <Icon name="CreditCard" size={8} className="mr-0.5 sm:mr-1" />
                                         30%
                                       </Badge>
                                     )}
-                                    <Badge variant={appointment.status === 'confirmed' ? 'default' : 'secondary'} className="text-xs">
-                                      {appointment.status === 'confirmed' ? 'Подтверждено' : 'Ожидание'}
+                                    <Badge variant={appointment.status === 'confirmed' ? 'default' : 'secondary'} className="text-[9px] sm:text-xs px-1 py-0 h-4 sm:h-5">
+                                      {appointment.status === 'confirmed' ? 'Подтв.' : 'Ожид.'}
                                     </Badge>
                                   </div>
                                 </div>
-                                <div className="flex gap-1">
+                                <div className="hidden sm:flex gap-1">
                                   <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={(e) => e.stopPropagation()}>
                                     <Icon name="Phone" size={12} />
                                   </Button>
@@ -166,9 +166,9 @@ const CalendarViews = ({
 
       {view === 'week' && (
         <Card>
-          <CardContent className="p-4">
-            <div className="overflow-x-auto">
-              <div className="min-w-[800px]">
+          <CardContent className="p-2 sm:p-4">
+            <div className="overflow-x-auto -mx-2 sm:mx-0">
+              <div className="min-w-[600px] sm:min-w-[800px] px-2 sm:px-0">
                 <div className="grid grid-cols-8 gap-2 mb-2">
                   <div className="text-xs text-muted-foreground font-medium"></div>
                   {weekDays.map((day, idx) => (

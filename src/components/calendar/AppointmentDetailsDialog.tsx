@@ -22,6 +22,7 @@ interface AppointmentDetailsDialogProps {
   onCancel: (id: number) => void;
   showCalendarShare: boolean;
   onShareClose: () => void;
+  calendarView?: 'day' | 'week' | 'month';
 }
 
 const AppointmentDetailsDialog = ({
@@ -32,6 +33,7 @@ const AppointmentDetailsDialog = ({
   onCancel,
   showCalendarShare,
   onShareClose,
+  calendarView = 'day',
 }: AppointmentDetailsDialogProps) => {
   return (
     <>
@@ -140,8 +142,8 @@ const AppointmentDetailsDialog = ({
       <ShareDialog
         title="Мой календарь записей"
         description="Поделитесь своим календарем с клиентами"
-        url={`${window.location.origin}/calendar/master1`}
-        previewUrl={`${window.location.origin}/calendar/master1`}
+        url={`${window.location.origin}/calendar/master1?view=${calendarView}`}
+        previewUrl={`${window.location.origin}/calendar/master1?view=${calendarView}`}
         open={showCalendarShare}
         onClose={onShareClose}
       />

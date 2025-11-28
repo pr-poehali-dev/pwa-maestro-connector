@@ -1,15 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import Icon from '@/components/ui/icon';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 
 const PublicCalendar = () => {
   const { masterId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const viewParam = searchParams.get('view') as 'day' | 'week' | 'month' | null;
+  const [view, setView] = useState<'day' | 'week' | 'month'>(viewParam || 'day');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+
+  useEffect(() => {
+    if (viewParam && ['day', 'week', 'month'].includes(viewParam)) {
+      setView(viewParam as 'day' | 'week' | 'month');
+    }
+  }, [viewParam]);
 
   const master = {
     name: 'Анна Петрова',

@@ -147,6 +147,7 @@ const MasterCalendar = () => {
         }}
         showCalendarShare={showCalendarShare}
         onShareClose={() => setShowCalendarShare(false)}
+        calendarView={view}
       />
     </div>
   );
