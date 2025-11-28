@@ -4,11 +4,20 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import Icon from '@/components/ui/icon';
+import SwipeCard from '@/components/SwipeCard';
+import ServicePreview from '@/components/ServicePreview';
+import ShareDialog from '@/components/ShareDialog';
 
 const services = [
   {
@@ -81,6 +90,14 @@ const MasterServices = () => {
   const [showNewService, setShowNewService] = useState(false);
   const [isGroupService, setIsGroupService] = useState(false);
   const [prepaymentRequired, setPrepaymentRequired] = useState(false);
+  const [viewService, setViewService] = useState<any>(null);
+  const [serviceToDelete, setServiceToDelete] = useState<number | null>(null);
+  const [serviceToShare, setServiceToShare] = useState<any>(null);
+  const [editingService, setEditingService] = useState<any>(null);
+
+  const handleDuplicateService = (service: any) => {
+    setSelectedService({ ...service, name: `${service.name} (копия)`, id: Date.now() });
+  };
 
   return (
     <div className="space-y-4 pb-20">
@@ -105,64 +122,99 @@ const MasterServices = () => {
 
       <div className="grid gap-3">
         {services.map((service) => (
-          <Card key={service.id} className="hover:shadow-md transition-shadow">
-            <CardContent className="p-4">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-semibold">{service.name}</h4>
-                    <Badge variant="outline" className="text-xs">{service.category}</Badge>
-                    {!service.active && <Badge variant="secondary" className="text-xs">Неактивна</Badge>}
-                  </div>
-
-                  <p className="text-sm text-muted-foreground">{service.description}</p>
-
-                  <div className="flex items-center gap-4 text-sm flex-wrap">
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <Icon name="Clock" size={14} />
-                      <span>{service.duration} мин</span>
+          <SwipeCard
+            key={service.id}
+            onSwipeLeft={() => setServiceToDelete(service.id)}
+            onSwipeRight={() => handleDuplicateService(service)}
+            leftAction={{ icon: 'Trash2', label: 'Удалить', color: '#ef4444' }}
+            rightAction={{ icon: 'Copy', label: 'Копировать', color: '#3b82f6' }}
+          >
+            <Card 
+              className="hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => setViewService(service)}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-semibold">{service.name}</h4>
+                      <Badge variant="outline" className="text-xs">{service.category}</Badge>
+                      {!service.active && <Badge variant="secondary" className="text-xs">Неактивна</Badge>}
                     </div>
-                    <div className="flex items-center gap-1 font-semibold">
-                      <Icon name="Wallet" size={14} />
-                      <span>{service.price} ₽</span>
-                    </div>
-                    {service.isGroup && (
-                      <Badge variant="secondary" className="text-xs">
-                        <Icon name="Users" size={12} className="mr-1" />
-                        До {service.maxParticipants} чел
+
+                    <p className="text-sm text-muted-foreground line-clamp-2">{service.description}</p>
+
+                    <div className="flex items-center gap-4 text-sm flex-wrap">
+                      <div className="flex items-center gap-1 text-muted-foreground">
+                        <Icon name="Clock" size={14} />
+                        <span>{service.duration} мин</span>
+                      </div>
+                      <div className="flex items-center gap-1 font-semibold">
+                        <Icon name="Wallet" size={14} />
+                        <span>{service.price} ₽</span>
+                      </div>
+                      {service.isGroup && (
+                        <Badge variant="secondary" className="text-xs">
+                          <Icon name="Users" size={12} className="mr-1" />
+                          До {service.maxParticipants} чел
+                        </Badge>
+                      )}
+                      <Badge variant="outline" className="text-xs">
+                        <Icon name={service.type === 'online' ? 'Video' : 'MapPin'} size={12} className="mr-1" />
+                        {service.type === 'online' ? 'Онлайн' : 'Оффлайн'}
                       </Badge>
-                    )}
-                    <Badge variant="outline" className="text-xs">
-                      <Icon name={service.type === 'online' ? 'Video' : 'MapPin'} size={12} className="mr-1" />
-                      {service.type === 'online' ? 'Онлайн' : 'Оффлайн'}
-                    </Badge>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-1">
+                    <Button 
+                      size="sm" 
+                      variant="ghost"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setServiceToShare(service);
+                      }}
+                    >
+                      <Icon name="Share2" size={14} />
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                        <Button size="sm" variant="ghost">
+                          <Icon name="MoreVertical" size={14} />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingService(service);
+                        }}>
+                          <Icon name="Edit" size={14} className="mr-2" />
+                          Изменить
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => {
+                          e.stopPropagation();
+                          handleDuplicateService(service);
+                        }}>
+                          <Icon name="Copy" size={14} className="mr-2" />
+                          Копировать
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setServiceToDelete(service.id);
+                          }}
+                          className="text-destructive"
+                        >
+                          <Icon name="Trash2" size={14} className="mr-2" />
+                          Удалить
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </div>
-
-                <div className="flex flex-col gap-2">
-                  <Button 
-                    size="sm" 
-                    variant="outline"
-                    onClick={() => setSelectedService(service)}
-                  >
-                    <Icon name="Edit" size={14} className="mr-1" />
-                    Изменить
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="ghost"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      window.open(`/book/master1/${service.id}`, '_blank');
-                    }}
-                  >
-                    <Icon name="Link" size={14} className="mr-1" />
-                    Ссылка
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </SwipeCard>
         ))}
       </div>
 
@@ -381,6 +433,77 @@ const MasterServices = () => {
               </Button>
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      <ServicePreview
+        service={viewService}
+        open={!!viewService}
+        onClose={() => setViewService(null)}
+        onEdit={() => {
+          setEditingService(viewService);
+          setViewService(null);
+        }}
+      />
+
+      <Dialog open={!!editingService} onOpenChange={(open) => !open && setEditingService(null)}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Изменить услугу</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Название услуги</Label>
+              <Input defaultValue={editingService?.name} />
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" className="flex-1" onClick={() => setEditingService(null)}>
+                Отмена
+              </Button>
+              <Button className="flex-1" onClick={() => setEditingService(null)}>
+                Сохранить
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <ShareDialog
+        title={serviceToShare?.name || ''}
+        description="Поделитесь услугой с клиентами"
+        url={`https://tact.app/book/master1/${serviceToShare?.id}`}
+        open={!!serviceToShare}
+        onClose={() => setServiceToShare(null)}
+        preview={
+          serviceToShare && (
+            <div className="space-y-2">
+              <h4 className="font-semibold">{serviceToShare.name}</h4>
+              <p className="text-sm text-muted-foreground">{serviceToShare.description}</p>
+              <div className="flex items-center gap-4 text-sm">
+                <span>{serviceToShare.duration} мин</span>
+                <span className="font-semibold">{serviceToShare.price} ₽</span>
+              </div>
+            </div>
+          )
+        }
+      />
+
+      <Dialog open={!!serviceToDelete} onOpenChange={(open) => !open && setServiceToDelete(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Удалить услугу?</DialogTitle>
+            <DialogDescription>
+              Вы уверены, что хотите удалить эту услугу? Это действие нельзя отменить.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setServiceToDelete(null)}>
+              Отмена
+            </Button>
+            <Button variant="destructive" onClick={() => setServiceToDelete(null)}>
+              Удалить
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

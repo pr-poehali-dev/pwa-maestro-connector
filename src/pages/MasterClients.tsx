@@ -4,16 +4,31 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import Icon from '@/components/ui/icon';
+import SwipeCard from '@/components/SwipeCard';
 
 const clients = [
   {
     id: 1,
     name: 'Мария Соколова',
     phone: '+7 (999) 123-45-67',
+    telegram: '@mariya_sokolova',
     totalVisits: 12,
     totalSpent: 18000,
     lastVisit: '2024-11-20',
@@ -56,6 +71,17 @@ const MasterClients = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClient, setSelectedClient] = useState<any>(null);
   const [showNewClient, setShowNewClient] = useState(false);
+  const [editingClient, setEditingClient] = useState<any>(null);
+  const [clientToDelete, setClientToDelete] = useState<number | null>(null);
+
+  const handleMessageClient = (client: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (client.telegram) {
+      window.open(`https://t.me/${client.telegram.replace('@', '')}`, '_blank');
+    } else {
+      window.open(`https://wa.me/${client.phone.replace(/\D/g, '')}`, '_blank');
+    }
+  };
 
   const filteredClients = searchQuery
     ? clients.filter(c => 
@@ -97,52 +123,97 @@ const MasterClients = () => {
 
       <div className="grid gap-3">
         {filteredClients.map((client) => (
-          <Card key={client.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => setSelectedClient(client)}>
-            <CardContent className="p-4">
-              <div className="flex items-start gap-3">
-                <Avatar className="w-12 h-12">
-                  <AvatarFallback>{client.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                </Avatar>
-                
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-semibold">{client.name}</h4>
-                    {client.tags.map(tag => (
-                      <Badge key={tag} variant="secondary" className="text-xs">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
+          <SwipeCard
+            key={client.id}
+            onSwipeLeft={() => setClientToDelete(client.id)}
+            leftAction={{ icon: 'Trash2', label: 'Удалить', color: '#ef4444' }}
+          >
+            <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => setSelectedClient(client)}>
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <Avatar className="w-12 h-12">
+                    <AvatarFallback>{client.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                  </Avatar>
                   
-                  <div className="space-y-1 text-xs text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Icon name="Phone" size={12} />
-                      <span>{client.phone}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-semibold">{client.name}</h4>
+                      {client.tags.map((tag: string) => (
+                        <Badge key={tag} variant="secondary" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
                     </div>
-                    <div className="flex items-center gap-3">
+                    
+                    <div className="space-y-1 text-xs text-muted-foreground">
                       <div className="flex items-center gap-1">
-                        <Icon name="Calendar" size={12} />
-                        <span>{client.totalVisits} визитов</span>
+                        <Icon name="Phone" size={12} />
+                        <span>{client.phone}</span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Icon name="Wallet" size={12} />
-                        <span>{client.totalSpent.toLocaleString()} ₽</span>
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1">
+                          <Icon name="Calendar" size={12} />
+                          <span>{client.totalVisits} визитов</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Icon name="Wallet" size={12} />
+                          <span>{client.totalSpent.toLocaleString()} ₽</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="flex flex-col gap-1">
-                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
-                    <Icon name="Phone" size={14} />
-                  </Button>
-                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
-                    <Icon name="MessageSquare" size={14} />
-                  </Button>
+                  <div className="flex gap-1">
+                    <Button 
+                      size="sm" 
+                      variant="ghost" 
+                      className="h-8 w-8 p-0"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.open(`tel:${client.phone}`);
+                      }}
+                    >
+                      <Icon name="Phone" size={14} />
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="ghost" 
+                      className="h-8 w-8 p-0"
+                      onClick={(e) => handleMessageClient(client, e)}
+                    >
+                      <Icon name="MessageCircle" size={14} />
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                          <Icon name="MoreVertical" size={14} />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingClient(client);
+                        }}>
+                          <Icon name="Edit" size={14} className="mr-2" />
+                          Редактировать
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setClientToDelete(client.id);
+                          }}
+                          className="text-destructive"
+                        >
+                          <Icon name="Trash2" size={14} className="mr-2" />
+                          Удалить
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </SwipeCard>
         ))}
       </div>
 
@@ -245,8 +316,29 @@ const MasterClients = () => {
             </div>
 
             <div className="space-y-2">
-              <Label>Email (опционально)</Label>
-              <Input placeholder="email@example.com" type="email" />
+              <Label>Мессенджер</Label>
+              <div className="flex gap-2">
+                <Select defaultValue="telegram">
+                  <SelectTrigger className="w-[140px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="telegram">
+                      <div className="flex items-center gap-2">
+                        <Icon name="Send" size={14} />
+                        Telegram
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="whatsapp">
+                      <div className="flex items-center gap-2">
+                        <Icon name="MessageCircle" size={14} />
+                        WhatsApp
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <Input placeholder="@username или номер" className="flex-1" />
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -263,6 +355,87 @@ const MasterClients = () => {
               </Button>
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!editingClient} onOpenChange={(open) => !open && setEditingClient(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Редактировать клиента</DialogTitle>
+          </DialogHeader>
+
+          {editingClient && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Имя и фамилия</Label>
+                <Input defaultValue={editingClient.name} />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Телефон</Label>
+                <Input defaultValue={editingClient.phone} type="tel" />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Мессенджер</Label>
+                <div className="flex gap-2">
+                  <Select defaultValue="telegram">
+                    <SelectTrigger className="w-[140px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="telegram">
+                        <div className="flex items-center gap-2">
+                          <Icon name="Send" size={14} />
+                          Telegram
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="whatsapp">
+                        <div className="flex items-center gap-2">
+                          <Icon name="MessageCircle" size={14} />
+                          WhatsApp
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Input defaultValue={editingClient.telegram} placeholder="@username или номер" className="flex-1" />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Заметки (опционально)</Label>
+                <Textarea defaultValue={editingClient.notes} rows={3} />
+              </div>
+
+              <div className="flex gap-2">
+                <Button variant="outline" className="flex-1" onClick={() => setEditingClient(null)}>
+                  Отмена
+                </Button>
+                <Button className="flex-1" onClick={() => setEditingClient(null)}>
+                  Сохранить
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!clientToDelete} onOpenChange={(open) => !open && setClientToDelete(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Удалить клиента?</DialogTitle>
+            <DialogDescription>
+              Вы уверены, что хотите удалить этого клиента? История посещений сохранится, но контакт будет удален.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setClientToDelete(null)}>
+              Отмена
+            </Button>
+            <Button variant="destructive" onClick={() => setClientToDelete(null)}>
+              Удалить
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

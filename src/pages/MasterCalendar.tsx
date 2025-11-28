@@ -2,14 +2,21 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import Icon from '@/components/ui/icon';
+import SwipeCard from '@/components/SwipeCard';
 
 const appointments = [
   { id: 1, time: '09:00', client: 'Мария Соколова', service: 'Маникюр с покрытием', duration: 60, status: 'confirmed', date: '2024-11-27' },
@@ -49,6 +56,16 @@ const MasterCalendar = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [prepaymentPercent, setPrepaymentPercent] = useState(0);
+  const [appointmentToCancel, setAppointmentToCancel] = useState<number | null>(null);
+  const [appointmentToRepeat, setAppointmentToRepeat] = useState<typeof appointments[0] | null>(null);
+
+  const handleCancelAppointment = (id: number) => {
+    setAppointmentToCancel(id);
+  };
+
+  const handleRepeatAppointment = (appointment: typeof appointments[0]) => {
+    setAppointmentToRepeat(appointment);
+  };
 
   let filteredAppointments = appointments;
   
@@ -155,32 +172,60 @@ const MasterCalendar = () => {
                     
                     <div className="flex-1 p-2">
                       {appointment ? (
-                        <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
-                          <CardContent className="p-3">
-                            <div className="flex items-center justify-between gap-2">
-                              <div className="flex-1 min-w-0">
-                                <p className="font-semibold text-sm truncate">{appointment.client}</p>
-                                <p className="text-xs text-muted-foreground truncate">{appointment.service}</p>
-                                <div className="flex items-center gap-2 mt-1">
-                                  <Badge variant="outline" className="text-xs">
-                                    {appointment.duration} мин
-                                  </Badge>
-                                  <Badge variant={appointment.status === 'confirmed' ? 'default' : 'secondary'} className="text-xs">
-                                    {appointment.status === 'confirmed' ? 'Подтверждено' : 'Ожидание'}
-                                  </Badge>
+                        <SwipeCard
+                          onSwipeLeft={() => handleCancelAppointment(appointment.id)}
+                          onSwipeRight={() => handleRepeatAppointment(appointment)}
+                          leftAction={{ icon: 'X', label: 'Отменить', color: '#ef4444' }}
+                          rightAction={{ icon: 'Copy', label: 'Повторить', color: '#3b82f6' }}
+                          className="h-full"
+                        >
+                          <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
+                            <CardContent className="p-3">
+                              <div className="flex items-center justify-between gap-2">
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-semibold text-sm truncate">{appointment.client}</p>
+                                  <p className="text-xs text-muted-foreground truncate">{appointment.service}</p>
+                                  <div className="flex items-center gap-2 mt-1">
+                                    <Badge variant="outline" className="text-xs">
+                                      {appointment.duration} мин
+                                    </Badge>
+                                    <Badge variant={appointment.status === 'confirmed' ? 'default' : 'secondary'} className="text-xs">
+                                      {appointment.status === 'confirmed' ? 'Подтверждено' : 'Ожидание'}
+                                    </Badge>
+                                  </div>
+                                </div>
+                                <div className="flex gap-1">
+                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
+                                    <Icon name="Phone" size={12} />
+                                  </Button>
+                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
+                                    <Icon name="MessageCircle" size={12} />
+                                  </Button>
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
+                                        <Icon name="MoreVertical" size={12} />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                      <DropdownMenuItem onClick={() => handleRepeatAppointment(appointment)}>
+                                        <Icon name="Copy" size={14} className="mr-2" />
+                                        Повторить запись
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem 
+                                        onClick={() => handleCancelAppointment(appointment.id)}
+                                        className="text-destructive"
+                                      >
+                                        <Icon name="X" size={14} className="mr-2" />
+                                        Отменить запись
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
                                 </div>
                               </div>
-                              <div className="flex gap-1">
-                                <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
-                                  <Icon name="Phone" size={12} />
-                                </Button>
-                                <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
-                                  <Icon name="MoreVertical" size={12} />
-                                </Button>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
+                            </CardContent>
+                          </Card>
+                        </SwipeCard>
                       ) : (
                         <button
                           onClick={() => {
@@ -407,6 +452,80 @@ const MasterCalendar = () => {
               </Button>
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!appointmentToCancel} onOpenChange={(open) => !open && setAppointmentToCancel(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Отменить запись?</DialogTitle>
+            <DialogDescription>
+              Вы уверены, что хотите отменить эту запись? Это действие нельзя отменить.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAppointmentToCancel(null)}>
+              Нет, оставить
+            </Button>
+            <Button 
+              variant="destructive" 
+              onClick={() => {
+                setAppointmentToCancel(null);
+              }}
+            >
+              Да, отменить
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!appointmentToRepeat} onOpenChange={(open) => !open && setAppointmentToRepeat(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Повторить запись</DialogTitle>
+            <DialogDescription>
+              Выберите новую дату и время для повторения записи
+            </DialogDescription>
+          </DialogHeader>
+          
+          {appointmentToRepeat && (
+            <div className="space-y-4">
+              <div className="p-3 bg-muted rounded-lg">
+                <p className="text-sm font-medium">Клиент: {appointmentToRepeat.client}</p>
+                <p className="text-sm text-muted-foreground">Услуга: {appointmentToRepeat.service}</p>
+                <p className="text-sm text-muted-foreground">Длительность: {appointmentToRepeat.duration} мин</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Новая дата</Label>
+                  <Input type="date" defaultValue="2024-11-28" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Новое время</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Выберите время" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {timeSlots.map(time => (
+                        <SelectItem key={time} value={time}>{time}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setAppointmentToRepeat(null)}>
+                  Отмена
+                </Button>
+                <Button onClick={() => setAppointmentToRepeat(null)}>
+                  Создать запись
+                </Button>
+              </DialogFooter>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>

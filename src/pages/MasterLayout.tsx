@@ -40,7 +40,7 @@ const MasterLayout = () => {
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <TactLogo size={32} />
-                <h1 className="text-lg font-bold text-primary">Tact</h1>
+                <h1 className="text-lg font-bold text-primary">Такт</h1>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -141,7 +141,6 @@ const MasterLayout = () => {
         {activeTab === 'calendar' && <MasterCalendar />}
         {activeTab === 'clients' && <MasterClients />}
         {activeTab === 'services' && <MasterServices />}
-        {activeTab === 'links' && <LinkGenerator />}
         {activeTab === 'schedule' && <MasterSchedule />}
         {activeTab === 'notifications' && <MasterNotifications />}
         {activeTab === 'settings' && <MasterSettings />}
@@ -188,16 +187,6 @@ const MasterLayout = () => {
             >
               <Icon name="Briefcase" size={22} />
               <span className="text-xs font-medium">Услуги</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('links')}
-              className={`flex flex-col items-center gap-1 px-3 py-2 transition-colors ${
-                activeTab === 'links' ? 'text-primary' : 'text-muted-foreground'
-              }`}
-            >
-              <Icon name="Link" size={22} />
-              <span className="text-xs font-medium">Ссылки</span>
             </button>
 
             <button

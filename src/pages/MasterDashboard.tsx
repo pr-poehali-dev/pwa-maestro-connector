@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Icon from '@/components/ui/icon';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const upcomingAppointments = [
   {
@@ -67,6 +68,16 @@ const stats = [
     icon: 'Users',
     trend: 'up',
   },
+];
+
+const revenueData = [
+  { day: '1', revenue: 15000 },
+  { day: '5', revenue: 22000 },
+  { day: '10', revenue: 18000 },
+  { day: '15', revenue: 28000 },
+  { day: '20', revenue: 35000 },
+  { day: '25', revenue: 42000 },
+  { day: '30', revenue: 48000 },
 ];
 
 interface MasterDashboardProps {
@@ -205,26 +216,58 @@ const MasterDashboard = ({ onNavigate }: MasterDashboardProps) => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
-          <CardContent className="p-6">
-            <div className="space-y-4">
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-xl font-bold">Создать запись</h3>
-                <p className="text-sm opacity-90">Добавьте новую запись клиента в несколько кликов</p>
+                <CardTitle>Выручка за месяц</CardTitle>
+                <p className="text-sm text-muted-foreground mt-1">48 000 ₽ • +12% к прошлому месяцу</p>
               </div>
-              <Button 
-                size="lg" 
-                variant="secondary" 
-                className="w-full" 
-                onClick={() => onNavigate('calendar')}
-              >
-                <Icon name="Plus" size={20} className="mr-2" />
-                Новая запись
-              </Button>
+              <Badge variant="outline" className="gap-1">
+                <Icon name="TrendingUp" size={12} className="text-green-500" />
+                <span className="text-green-500">+12%</span>
+              </Badge>
             </div>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={200}>
+              <LineChart data={revenueData}>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                <XAxis 
+                  dataKey="day" 
+                  className="text-xs" 
+                  tick={{ fontSize: 12 }}
+                />
+                <YAxis 
+                  className="text-xs" 
+                  tick={{ fontSize: 12 }}
+                  tickFormatter={(value) => `${value / 1000}k`}
+                />
+                <Tooltip 
+                  formatter={(value: number) => [`${value.toLocaleString()} ₽`, 'Выручка']}
+                  labelFormatter={(label) => `День ${label}`}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="revenue" 
+                  stroke="hsl(var(--primary))" 
+                  strokeWidth={2}
+                  dot={{ fill: 'hsl(var(--primary))', r: 4 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
       </div>
+
+      <Button 
+        size="lg" 
+        className="fixed bottom-20 left-1/2 -translate-x-1/2 z-40 shadow-lg w-[calc(100%-2rem)] max-w-md"
+        onClick={() => onNavigate('calendar')}
+      >
+        <Icon name="Plus" size={20} className="mr-2" />
+        Новая запись
+      </Button>
     </div>
   );
 };
