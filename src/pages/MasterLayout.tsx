@@ -142,7 +142,7 @@ const MasterLayout = () => {
         {activeTab === 'clients' && <MasterClients />}
         {activeTab === 'services' && <MasterServices />}
         {activeTab === 'schedule' && <MasterSchedule />}
-        {activeTab === 'notifications' && <MasterNotifications />}
+        {activeTab === 'notifications' && <MasterNotifications onNavigate={setActiveTab} />}
         {activeTab === 'settings' && <MasterSettings onNavigate={setActiveTab} />}
       </main>
 

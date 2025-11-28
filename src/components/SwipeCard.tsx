@@ -30,19 +30,45 @@ const SwipeCard = ({
   const [offset, setOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const startX = useRef(0);
+  const startY = useRef(0);
   const currentX = useRef(0);
+  const isScrolling = useRef(false);
 
-  const handleStart = (clientX: number) => {
+  const handleStart = (clientX: number, clientY: number) => {
     // Отключаем свайп на десктопе (>= 1024px)
     if (window.innerWidth >= 1024) return;
     
     setIsDragging(true);
     startX.current = clientX;
+    startY.current = clientY;
     currentX.current = clientX;
+    isScrolling.current = false;
   };
 
-  const handleMove = (clientX: number) => {
+  const handleMove = (clientX: number, clientY: number) => {
     if (!isDragging) return;
+    
+    // Определяем направление движения при первом движении
+    if (!isScrolling.current && Math.abs(clientX - startX.current) < 10 && Math.abs(clientY - startY.current) < 10) {
+      return; // Слишком малое движение, игнорируем
+    }
+    
+    // Если еще не определили направление
+    if (!isScrolling.current) {
+      const deltaX = Math.abs(clientX - startX.current);
+      const deltaY = Math.abs(clientY - startY.current);
+      
+      // Если вертикальное движение больше горизонтального - это скролл
+      if (deltaY > deltaX) {
+        isScrolling.current = true;
+        setIsDragging(false);
+        setOffset(0);
+        return;
+      }
+    }
+    
+    // Если обнаружен скролл, игнорируем свайп
+    if (isScrolling.current) return;
     
     currentX.current = clientX;
     const diff = clientX - startX.current;
@@ -69,20 +95,20 @@ const SwipeCard = ({
   };
 
   const handleTouchStart = (e: TouchEvent) => {
-    handleStart(e.touches[0].clientX);
+    handleStart(e.touches[0].clientX, e.touches[0].clientY);
   };
 
   const handleTouchMove = (e: TouchEvent) => {
-    handleMove(e.touches[0].clientX);
+    handleMove(e.touches[0].clientX, e.touches[0].clientY);
   };
 
   const handleMouseDown = (e: MouseEvent) => {
-    handleStart(e.clientX);
+    handleStart(e.clientX, e.clientY);
   };
 
   const handleMouseMove = (e: MouseEvent) => {
     if (isDragging) {
-      handleMove(e.clientX);
+      handleMove(e.clientX, e.clientY);
     }
   };
 

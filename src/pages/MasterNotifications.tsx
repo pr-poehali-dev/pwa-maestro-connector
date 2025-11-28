@@ -63,7 +63,11 @@ const messageTemplates = [
   },
 ];
 
-const MasterNotifications = () => {
+interface MasterNotificationsProps {
+  onNavigate?: (tab: string) => void;
+}
+
+const MasterNotifications = ({ onNavigate }: MasterNotificationsProps) => {
   const [settings, setSettings] = useState({
     autoReminders: true,
     reminder24h: true,
@@ -78,10 +82,21 @@ const MasterNotifications = () => {
   const [showTemplateEdit, setShowTemplateEdit] = useState(false);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold">Уведомления и напоминания</h2>
-        <p className="text-sm text-muted-foreground">Автоматические уведомления для ваших клиентов</p>
+    <div className="space-y-6 pb-20">
+      <div className="flex items-center gap-3">
+        {onNavigate && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onNavigate('settings')}
+          >
+            <Icon name="ArrowLeft" size={20} />
+          </Button>
+        )}
+        <div className="flex-1">
+          <h2 className="text-2xl font-bold">Уведомления и напоминания</h2>
+          <p className="text-sm text-muted-foreground">Автоматические уведомления для ваших клиентов</p>
+        </div>
       </div>
 
       <Card>
