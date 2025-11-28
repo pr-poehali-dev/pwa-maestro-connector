@@ -94,6 +94,7 @@ const MasterServices = () => {
     setEditingService(null);
     setIsGroupService(false);
     setPrepaymentRequired(false);
+    setServiceImage(null);
   };
 
   return (
@@ -151,6 +152,7 @@ const MasterServices = () => {
         open={!!viewService}
         onClose={() => setViewService(null)}
         onEdit={() => {
+          setSelectedService(null);
           setEditingService(viewService);
           setViewService(null);
         }}

@@ -9,6 +9,7 @@ import MasterAuth from "./pages/MasterAuth";
 import MasterLayout from "./pages/MasterLayout";
 import PublicBooking from "./pages/PublicBooking";
 import ServicePreview from "./pages/ServicePreview";
+import PublicCalendar from "./pages/PublicCalendar";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/master" element={<MasterAuth />} />
           <Route path="/master/dashboard" element={<MasterLayout />} />
           <Route path="/service/:masterId/:serviceId" element={<ServicePreview />} />
+          <Route path="/calendar/:masterId" element={<PublicCalendar />} />
           <Route path="/book/:masterId/:serviceId" element={<PublicBooking />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

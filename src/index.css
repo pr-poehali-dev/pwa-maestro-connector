@@ -109,23 +109,46 @@
 }
 
 @layer utilities {
-  @media (max-width: 424px) {
+  /* Мобильные устройства: 360-428px */
+  @media (max-width: 428px) {
     .container {
       padding-left: 0.75rem;
       padding-right: 0.75rem;
+      max-width: 100%;
     }
 
+    h1,
+    .text-3xl {
+      font-size: 1.5rem;
+      line-height: 2rem;
+    }
+
+    h2,
     .text-2xl {
       font-size: 1.25rem;
       line-height: 1.75rem;
+    }
+
+    h3,
+    .text-xl {
+      font-size: 1.125rem;
+      line-height: 1.625rem;
     }
 
     .gap-4 {
       gap: 0.75rem;
     }
 
+    .gap-6 {
+      gap: 1rem;
+    }
+
     .p-4 {
       padding: 0.75rem;
+    }
+
+    .p-6 {
+      padding: 1rem;
     }
 
     .px-4 {
@@ -136,6 +159,92 @@
     .py-4 {
       padding-top: 0.75rem;
       padding-bottom: 0.75rem;
+    }
+
+    .space-y-6 > * + * {
+      margin-top: 1rem;
+    }
+
+    /* Увеличение кликабельных зон для touch */
+    button,
+    a,
+    [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+
+  /* Планшеты: 768-1024px */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .container {
+      max-width: 768px;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+
+    /* Оптимизация для планшетов */
+    .grid-cols-1 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* Десктопы: 1024px+ */
+  @media (min-width: 1024px) {
+    .container {
+      max-width: 1280px;
+    }
+  }
+
+  /* Большие экраны: 1440px+ */
+  @media (min-width: 1440px) {
+    .container {
+      max-width: 1440px;
+    }
+  }
+
+  /* 4K мониторы: 2560px+ */
+  @media (min-width: 2560px) {
+    .container {
+      max-width: 1920px;
+    }
+
+    /* Масштабирование контента */
+    body {
+      font-size: 18px;
+    }
+
+    h1,
+    .text-3xl {
+      font-size: 2.5rem;
+    }
+
+    h2,
+    .text-2xl {
+      font-size: 2rem;
+    }
+  }
+
+  /* Адаптация под touch-устройства */
+  @media (hover: none) and (pointer: coarse) {
+    button,
+    a,
+    [role="button"] {
+      min-height: 44px;
+    }
+
+    input,
+    textarea,
+    select {
+      font-size: 16px; /* Предотвращение zoom на iOS */
+    }
+  }
+
+  /* Высокая плотность пикселей */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    img,
+    svg {
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
     }
   }
 }

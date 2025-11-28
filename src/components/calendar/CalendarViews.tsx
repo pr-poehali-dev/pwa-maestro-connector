@@ -53,6 +53,16 @@ const CalendarViews = ({
       {view === 'day' && (
         <Card>
           <CardContent className="p-4">
+            <div className="mb-4 pb-3 border-b">
+              <h3 className="text-lg font-semibold">
+                {selectedDate ? selectedDate.toLocaleDateString('ru-RU', { 
+                  weekday: 'long', 
+                  day: 'numeric', 
+                  month: 'long',
+                  year: 'numeric'
+                }) : 'Сегодня'}
+              </h3>
+            </div>
             <div className="space-y-2">
               {timeSlots.map((time) => {
                 const appointment = filteredAppointments.find(a => a.time === time);
@@ -90,6 +100,12 @@ const CalendarViews = ({
                                       <Icon name="MapPin" size={10} className="mr-1" />
                                       Оффлайн
                                     </Badge>
+                                    {(appointment as any).prepaymentRequired && (
+                                      <Badge variant="secondary" className="text-xs">
+                                        <Icon name="CreditCard" size={10} className="mr-1" />
+                                        30%
+                                      </Badge>
+                                    )}
                                     <Badge variant={appointment.status === 'confirmed' ? 'default' : 'secondary'} className="text-xs">
                                       {appointment.status === 'confirmed' ? 'Подтверждено' : 'Ожидание'}
                                     </Badge>

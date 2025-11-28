@@ -78,6 +78,12 @@ const ServiceCard = ({
                   <Icon name={service.type === 'online' ? 'Video' : 'MapPin'} size={12} className="mr-1" />
                   {service.type === 'online' ? 'Онлайн' : 'Оффлайн'}
                 </Badge>
+                {service.prepaymentRequired && (
+                  <Badge variant="secondary" className="text-xs">
+                    <Icon name="CreditCard" size={12} className="mr-1" />
+                    {service.prepaymentPercent}% предоплата
+                  </Badge>
+                )}
               </div>
             </div>
 

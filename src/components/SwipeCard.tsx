@@ -33,6 +33,9 @@ const SwipeCard = ({
   const currentX = useRef(0);
 
   const handleStart = (clientX: number) => {
+    // Отключаем свайп на десктопе (>= 1024px)
+    if (window.innerWidth >= 1024) return;
+    
     setIsDragging(true);
     startX.current = clientX;
     currentX.current = clientX;
