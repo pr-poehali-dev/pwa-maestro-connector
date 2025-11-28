@@ -57,7 +57,15 @@ const ShareDialog = ({ title, description, url, open, onClose, preview, previewU
             <Button 
               variant="outline" 
               className="w-full"
-              onClick={() => window.open(previewUrl, '_blank')}
+              onClick={() => {
+                const link = document.createElement('a');
+                link.href = previewUrl;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }}
             >
               <Icon name="ExternalLink" size={16} className="mr-2" />
               Открыть предпросмотр

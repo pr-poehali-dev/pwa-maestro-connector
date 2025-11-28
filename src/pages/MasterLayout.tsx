@@ -13,6 +13,7 @@ import MasterSchedule from './MasterSchedule';
 import MasterNotifications from './MasterNotifications';
 import MasterSettings from './MasterSettings';
 import LinkGenerator from './LinkGenerator';
+import { useScrollHideHeader } from '@/hooks/useScrollHideHeader';
 
 const notifications = [
   { id: 1, type: 'new_booking', text: 'Новая запись от Марии Соколовой', time: '5 мин назад', unread: true },
@@ -25,6 +26,7 @@ const MasterLayout = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const unreadCount = notifications.filter(n => n.unread).length;
+  const { isVisible } = useScrollHideHeader({ threshold: 100 });
   
   const profile = {
     name: 'Анна Петрова',
@@ -34,7 +36,9 @@ const MasterLayout = () => {
 
   return (
     <div className="min-h-screen pb-20 bg-background">
-      <header className="sticky top-0 z-40 bg-white border-b border-border shadow-sm">
+      <header className={`sticky top-0 z-40 bg-white border-b border-border shadow-sm transition-transform duration-300 ${
+        isVisible ? 'translate-y-0' : '-translate-y-full'
+      }`}>
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">

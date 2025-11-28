@@ -106,10 +106,11 @@ const MasterSettings = ({ onNavigate }: MasterSettingsProps) => {
       </div>
 
       <Tabs defaultValue="profile" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="profile">Профиль</TabsTrigger>
-          <TabsTrigger value="payment">Оплаты</TabsTrigger>
-          <TabsTrigger value="subscription">Подписка</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
+          <TabsTrigger value="profile" className="text-xs sm:text-sm">Профиль</TabsTrigger>
+          <TabsTrigger value="notifications" className="text-xs sm:text-sm">Уведомления</TabsTrigger>
+          <TabsTrigger value="payment" className="text-xs sm:text-sm">Оплаты</TabsTrigger>
+          <TabsTrigger value="subscription" className="text-xs sm:text-sm">Подписка</TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile" className="space-y-4 mt-6">
@@ -204,28 +205,112 @@ const MasterSettings = ({ onNavigate }: MasterSettingsProps) => {
             </CardContent>
           </Card>
 
+          <Button className="w-full">
+            <Icon name="Save" size={16} className="mr-2" />
+            Сохранить изменения
+          </Button>
+        </TabsContent>
+
+        <TabsContent value="notifications" className="space-y-4 mt-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Дополнительные настройки</CardTitle>
+              <CardTitle className="text-base">Уведомления о записях</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <Button 
-                variant="outline" 
-                className="w-full justify-between"
-                onClick={() => onNavigate?.('notifications')}
-              >
-                <div className="flex items-center gap-2">
-                  <Icon name="Bell" size={16} />
-                  <span>Уведомления и напоминания</span>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Новая запись</p>
+                  <p className="text-sm text-muted-foreground">Уведомление при новой записи клиента</p>
                 </div>
-                <Icon name="ChevronRight" size={16} />
-              </Button>
+                <Switch defaultChecked />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Отмена записи</p>
+                  <p className="text-sm text-muted-foreground">Когда клиент отменяет запись</p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Перенос записи</p>
+                  <p className="text-sm text-muted-foreground">Когда клиент переносит запись</p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Напоминания</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">За 24 часа до записи</p>
+                  <p className="text-sm text-muted-foreground">Напомнить о предстоящей записи</p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">За 2 часа до записи</p>
+                  <p className="text-sm text-muted-foreground">Финальное напоминание</p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Сводка на день</p>
+                  <p className="text-sm text-muted-foreground">Ежедневная сводка по записям в 8:00</p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Способы уведомлений</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Icon name="Mail" size={20} className="text-muted-foreground" />
+                  <div>
+                    <p className="font-medium">Email</p>
+                    <p className="text-sm text-muted-foreground">anna@example.com</p>
+                  </div>
+                </div>
+                <Switch defaultChecked />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Icon name="MessageSquare" size={20} className="text-muted-foreground" />
+                  <div>
+                    <p className="font-medium">Telegram</p>
+                    <p className="text-sm text-muted-foreground">Подключить бота</p>
+                  </div>
+                </div>
+                <Button size="sm" variant="outline">Подключить</Button>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Icon name="Smartphone" size={20} className="text-muted-foreground" />
+                  <div>
+                    <p className="font-medium">Push-уведомления</p>
+                    <p className="text-sm text-muted-foreground">В браузере</p>
+                  </div>
+                </div>
+                <Switch />
+              </div>
             </CardContent>
           </Card>
 
           <Button className="w-full">
             <Icon name="Save" size={16} className="mr-2" />
-            Сохранить изменения
+            Сохранить настройки
           </Button>
         </TabsContent>
 

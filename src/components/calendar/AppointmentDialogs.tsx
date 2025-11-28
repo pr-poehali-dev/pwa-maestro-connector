@@ -159,7 +159,7 @@ const AppointmentDialogs = ({
             </div>
 
             <Card>
-              <CardContent className="p-4 space-y-3">
+              <CardContent className="p-4 space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <Label className="font-medium">Требуется предоплата</Label>
@@ -168,18 +168,23 @@ const AppointmentDialogs = ({
                   <Switch />
                 </div>
                 
-                <div className="space-y-2">
-                  <Label>Размер предоплаты (%)</Label>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      type="number"
-                      min="10"
-                      max="100"
-                      value={prepaymentPercent}
-                      onChange={(e) => onPrepaymentChange(Number(e.target.value))}
-                      className="w-24"
-                    />
-                    <span className="text-sm text-muted-foreground">от 10% до 100%</span>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label>Размер предоплаты</Label>
+                    <span className="text-sm font-semibold">{prepaymentPercent}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="10"
+                    max="100"
+                    step="5"
+                    value={prepaymentPercent}
+                    onChange={(e) => onPrepaymentChange(Number(e.target.value))}
+                    className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>10%</span>
+                    <span>100%</span>
                   </div>
                 </div>
               </CardContent>

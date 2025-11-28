@@ -6,6 +6,7 @@ import { Calendar } from '@/components/ui/calendar';
 import Icon from '@/components/ui/icon';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
+import { useHideAddressBar } from '@/hooks/useHideAddressBar';
 import { haptics } from '@/utils/haptics';
 
 const PublicCalendar = () => {
@@ -23,6 +24,8 @@ const PublicCalendar = () => {
   const { scrollableRef, pullDistance, isRefreshing, threshold } = usePullToRefresh({
     onRefresh: handleRefresh,
   });
+  
+  useHideAddressBar();
 
   useEffect(() => {
     if (viewParam && ['day', 'week', 'month'].includes(viewParam)) {

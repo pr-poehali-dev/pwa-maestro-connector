@@ -13,6 +13,9 @@ interface CalendarHeaderProps {
   onShareClick: () => void;
   services: Array<{ id: string; name: string }>;
   clients: Array<{ id: string; name: string }>;
+  currentDate?: Date;
+  onPrevDate?: () => void;
+  onNextDate?: () => void;
 }
 
 const CalendarHeader = ({
@@ -25,12 +28,24 @@ const CalendarHeader = ({
   onShareClick,
   services,
   clients,
+  currentDate = new Date(),
+  onPrevDate,
+  onNextDate,
 }: CalendarHeaderProps) => {
+  const formatDate = () => {
+    const options: Intl.DateTimeFormatOptions = { 
+      weekday: 'long', 
+      day: 'numeric', 
+      month: 'long',
+      year: 'numeric'
+    };
+    return currentDate.toLocaleDateString('ru-RU', options);
+  };
   return (
-    <div className="sticky top-[73px] z-30 bg-background pt-2 sm:pt-4 pb-2 sm:pb-3 border-b">
+    <div className="sticky top-0 z-30 bg-background pt-2 sm:pt-4 pb-2 sm:pb-3 border-b shadow-sm">
       <div className="mb-2 sm:mb-3">
         <h2 className="text-lg sm:text-2xl font-bold">Календарь записей</h2>
-        <p className="text-[10px] sm:text-xs text-muted-foreground">Среда, 27 ноября 2024</p>
+        <p className="text-[10px] sm:text-xs text-muted-foreground capitalize">{formatDate()}</p>
       </div>
 
       <div className="space-y-2">
@@ -86,10 +101,16 @@ const CalendarHeader = ({
             >
               <Icon name="Share2" size={14} />
             </Button>
-            <Button size="sm" variant="ghost" className="h-8 w-8 sm:h-9 sm:w-9 p-0" onClick={() => haptics.selection()}>
+            <Button size="sm" variant="ghost" className="h-8 w-8 sm:h-9 sm:w-9 p-0" onClick={() => {
+              haptics.selection();
+              onPrevDate?.();
+            }}>
               <Icon name="ChevronLeft" size={14} />
             </Button>
-            <Button size="sm" variant="ghost" className="h-8 w-8 sm:h-9 sm:w-9 p-0" onClick={() => haptics.selection()}>
+            <Button size="sm" variant="ghost" className="h-8 w-8 sm:h-9 sm:w-9 p-0" onClick={() => {
+              haptics.selection();
+              onNextDate?.();
+            }}>
               <Icon name="ChevronRight" size={14} />
             </Button>
           </div>

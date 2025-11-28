@@ -4,6 +4,7 @@ import CalendarViews from '@/components/calendar/CalendarViews';
 import AppointmentDialogs from '@/components/calendar/AppointmentDialogs';
 import AppointmentDetailsDialog from '@/components/calendar/AppointmentDetailsDialog';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
+import { useHideAddressBar } from '@/hooks/useHideAddressBar';
 import Icon from '@/components/ui/icon';
 
 const appointments = [
@@ -49,6 +50,7 @@ const MasterCalendar = () => {
   const [selectedAppointment, setSelectedAppointment] = useState<typeof appointments[0] | null>(null);
   const [appointmentToMove, setAppointmentToMove] = useState<typeof appointments[0] | null>(null);
   const [showCalendarShare, setShowCalendarShare] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   const handleRefresh = async () => {
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -57,6 +59,8 @@ const MasterCalendar = () => {
   const { scrollableRef, pullDistance, isRefreshing, threshold } = usePullToRefresh({
     onRefresh: handleRefresh,
   });
+  
+  useHideAddressBar();
 
   const handleCancelAppointment = (id: number) => {
     setAppointmentToCancel(id);
@@ -88,25 +92,27 @@ const MasterCalendar = () => {
   }
 
   return (
-    <div ref={scrollableRef} className="space-y-4 pb-20 overflow-y-auto h-screen">
-      {pullDistance > 0 && (
-        <div
-          className="fixed top-[73px] left-0 right-0 flex items-center justify-center z-50 transition-all"
-          style={{
-            height: `${pullDistance}px`,
-            opacity: Math.min(pullDistance / threshold, 1),
-          }}
-        >
-          <div className="bg-background/90 backdrop-blur-sm rounded-full p-3 shadow-lg">
-            <Icon
-              name="RefreshCw"
-              size={24}
-              className={isRefreshing ? 'animate-spin text-primary' : 'text-muted-foreground'}
-            />
+    <div className="pb-20">
+      <div ref={scrollableRef} className="overflow-y-auto" style={{ height: 'calc(100vh - 73px)' }}>
+        {pullDistance > 0 && (
+          <div
+            className="absolute top-0 left-0 right-0 flex items-center justify-center z-50 transition-all"
+            style={{
+              height: `${pullDistance}px`,
+              opacity: Math.min(pullDistance / threshold, 1),
+            }}
+          >
+            <div className="bg-background/90 backdrop-blur-sm rounded-full p-3 shadow-lg">
+              <Icon
+                name="RefreshCw"
+                size={24}
+                className={isRefreshing ? 'animate-spin text-primary' : 'text-muted-foreground'}
+              />
+            </div>
           </div>
-        </div>
-      )}
-      <CalendarHeader
+        )}
+        
+        <CalendarHeader
         view={view}
         onViewChange={setView}
         selectedServiceFilter={selectedServiceFilter}
@@ -116,6 +122,29 @@ const MasterCalendar = () => {
         onShareClick={() => setShowCalendarShare(true)}
         services={services}
         clients={clients}
+        currentDate={currentDate}
+        onPrevDate={() => {
+          const newDate = new Date(currentDate);
+          if (view === 'day') {
+            newDate.setDate(newDate.getDate() - 1);
+          } else if (view === 'week') {
+            newDate.setDate(newDate.getDate() - 7);
+          } else {
+            newDate.setMonth(newDate.getMonth() - 1);
+          }
+          setCurrentDate(newDate);
+        }}
+        onNextDate={() => {
+          const newDate = new Date(currentDate);
+          if (view === 'day') {
+            newDate.setDate(newDate.getDate() + 1);
+          } else if (view === 'week') {
+            newDate.setDate(newDate.getDate() + 7);
+          } else {
+            newDate.setMonth(newDate.getMonth() + 1);
+          }
+          setCurrentDate(newDate);
+        }}
       />
 
       <CalendarViews
@@ -176,6 +205,7 @@ const MasterCalendar = () => {
         onShareClose={() => setShowCalendarShare(false)}
         calendarView={view}
       />
+      </div>
     </div>
   );
 };
