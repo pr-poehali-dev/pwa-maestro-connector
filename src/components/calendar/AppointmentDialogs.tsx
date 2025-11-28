@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import Icon from '@/components/ui/icon';
+import { haptics } from '@/utils/haptics';
 
 interface Appointment {
   id: number;
@@ -185,10 +186,16 @@ const AppointmentDialogs = ({
             </Card>
 
             <div className="flex gap-2">
-              <Button variant="outline" className="flex-1" onClick={onNewAppointmentClose}>
+              <Button variant="outline" className="flex-1" onClick={() => {
+                haptics.light();
+                onNewAppointmentClose();
+              }}>
                 Отмена
               </Button>
-              <Button className="flex-1" onClick={onNewAppointmentClose}>
+              <Button className="flex-1" onClick={() => {
+                haptics.success();
+                onNewAppointmentClose();
+              }}>
                 Создать запись
               </Button>
             </div>
@@ -205,10 +212,16 @@ const AppointmentDialogs = ({
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={onCancelClose}>
+            <Button variant="outline" onClick={() => {
+              haptics.light();
+              onCancelClose();
+            }}>
               Отмена
             </Button>
-            <Button variant="destructive" onClick={onCancelConfirm}>
+            <Button variant="destructive" onClick={() => {
+              haptics.error();
+              onCancelConfirm();
+            }}>
               Да, отменить
             </Button>
           </DialogFooter>
@@ -253,10 +266,16 @@ const AppointmentDialogs = ({
               </div>
 
               <DialogFooter>
-                <Button variant="outline" onClick={onRepeatClose}>
+                <Button variant="outline" onClick={() => {
+                  haptics.light();
+                  onRepeatClose();
+                }}>
                   Отмена
                 </Button>
-                <Button onClick={onRepeatConfirm}>
+                <Button onClick={() => {
+                  haptics.success();
+                  onRepeatConfirm();
+                }}>
                   Создать запись
                 </Button>
               </DialogFooter>
@@ -303,10 +322,16 @@ const AppointmentDialogs = ({
               </div>
 
               <DialogFooter>
-                <Button variant="outline" onClick={onMoveClose}>
+                <Button variant="outline" onClick={() => {
+                  haptics.light();
+                  onMoveClose();
+                }}>
                   Отмена
                 </Button>
-                <Button onClick={onMoveConfirm}>
+                <Button onClick={() => {
+                  haptics.success();
+                  onMoveConfirm();
+                }}>
                   Перенести
                 </Button>
               </DialogFooter>

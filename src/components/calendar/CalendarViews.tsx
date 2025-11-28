@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { haptics } from '@/utils/haptics';
 
 interface Appointment {
   id: number;
@@ -84,7 +85,10 @@ const CalendarViews = ({
                         >
                           <Card 
                             className="h-full hover:shadow-md transition-shadow cursor-pointer"
-                            onClick={() => onAppointmentClick(appointment)}
+                            onClick={() => {
+                              haptics.light();
+                              onAppointmentClick(appointment);
+                            }}
                           >
                             <CardContent className="p-2 sm:p-3">
                               <div className="flex items-center justify-between gap-1.5 sm:gap-2">
@@ -112,10 +116,16 @@ const CalendarViews = ({
                                   </div>
                                 </div>
                                 <div className="hidden sm:flex gap-1">
-                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={(e) => e.stopPropagation()}>
+                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={(e) => {
+                                    e.stopPropagation();
+                                    haptics.light();
+                                  }}>
                                     <Icon name="Phone" size={12} />
                                   </Button>
-                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={(e) => e.stopPropagation()}>
+                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={(e) => {
+                                    e.stopPropagation();
+                                    haptics.light();
+                                  }}>
                                     <Icon name="MessageCircle" size={12} />
                                   </Button>
                                   <DropdownMenu>
@@ -125,16 +135,28 @@ const CalendarViews = ({
                                       </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
-                                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onMoveAppointment(appointment); }}>
+                                      <DropdownMenuItem onClick={(e) => { 
+                                        e.stopPropagation(); 
+                                        haptics.medium();
+                                        onMoveAppointment(appointment); 
+                                      }}>
                                         <Icon name="Calendar" size={14} className="mr-2" />
                                         Перенести запись
                                       </DropdownMenuItem>
-                                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onRepeatAppointment(appointment); }}>
+                                      <DropdownMenuItem onClick={(e) => { 
+                                        e.stopPropagation(); 
+                                        haptics.medium();
+                                        onRepeatAppointment(appointment); 
+                                      }}>
                                         <Icon name="Copy" size={14} className="mr-2" />
                                         Повторить запись
                                       </DropdownMenuItem>
                                       <DropdownMenuItem 
-                                        onClick={(e) => { e.stopPropagation(); onCancelAppointment(appointment.id); }}
+                                        onClick={(e) => { 
+                                          e.stopPropagation(); 
+                                          haptics.heavy();
+                                          onCancelAppointment(appointment.id); 
+                                        }}
                                         className="text-destructive"
                                       >
                                         <Icon name="X" size={14} className="mr-2" />
@@ -149,7 +171,10 @@ const CalendarViews = ({
                         </SwipeCard>
                       ) : (
                         <button
-                          onClick={() => onNewAppointmentClick(time)}
+                          onClick={() => {
+                            haptics.light();
+                            onNewAppointmentClick(time);
+                          }}
                           className="w-full h-full flex items-center justify-center text-xs text-muted-foreground hover:bg-muted/50 rounded transition-colors"
                         >
                           Свободно

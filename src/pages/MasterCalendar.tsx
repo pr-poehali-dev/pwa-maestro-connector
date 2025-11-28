@@ -3,6 +3,8 @@ import CalendarHeader from '@/components/calendar/CalendarHeader';
 import CalendarViews from '@/components/calendar/CalendarViews';
 import AppointmentDialogs from '@/components/calendar/AppointmentDialogs';
 import AppointmentDetailsDialog from '@/components/calendar/AppointmentDetailsDialog';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
+import Icon from '@/components/ui/icon';
 
 const appointments = [
   { id: 1, time: '09:00', client: 'Мария Соколова', service: 'Маникюр с покрытием', duration: 60, status: 'confirmed', date: '2024-11-27' },
@@ -48,6 +50,14 @@ const MasterCalendar = () => {
   const [appointmentToMove, setAppointmentToMove] = useState<typeof appointments[0] | null>(null);
   const [showCalendarShare, setShowCalendarShare] = useState(false);
 
+  const handleRefresh = async () => {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  };
+
+  const { scrollableRef, pullDistance, isRefreshing, threshold } = usePullToRefresh({
+    onRefresh: handleRefresh,
+  });
+
   const handleCancelAppointment = (id: number) => {
     setAppointmentToCancel(id);
   };
@@ -78,7 +88,24 @@ const MasterCalendar = () => {
   }
 
   return (
-    <div className="space-y-4 pb-20">
+    <div ref={scrollableRef} className="space-y-4 pb-20 overflow-y-auto h-screen">
+      {pullDistance > 0 && (
+        <div
+          className="fixed top-[73px] left-0 right-0 flex items-center justify-center z-50 transition-all"
+          style={{
+            height: `${pullDistance}px`,
+            opacity: Math.min(pullDistance / threshold, 1),
+          }}
+        >
+          <div className="bg-background/90 backdrop-blur-sm rounded-full p-3 shadow-lg">
+            <Icon
+              name="RefreshCw"
+              size={24}
+              className={isRefreshing ? 'animate-spin text-primary' : 'text-muted-foreground'}
+            />
+          </div>
+        </div>
+      )}
       <CalendarHeader
         view={view}
         onViewChange={setView}

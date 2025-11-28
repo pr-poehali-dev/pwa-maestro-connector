@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Icon from '@/components/ui/icon';
+import { haptics } from '@/utils/haptics';
 
 interface CalendarHeaderProps {
   view: 'day' | 'week' | 'month';
@@ -37,7 +38,10 @@ const CalendarHeader = ({
           <Button 
             size="sm" 
             variant={view === 'day' ? 'default' : 'outline'} 
-            onClick={() => onViewChange('day')}
+            onClick={() => {
+              haptics.selection();
+              onViewChange('day');
+            }}
             className="h-8 sm:h-9 text-xs sm:text-sm px-2 sm:px-3"
           >
             <Icon name="Calendar" size={12} className="mr-0.5 sm:mr-1" />
@@ -46,7 +50,10 @@ const CalendarHeader = ({
           <Button 
             size="sm" 
             variant={view === 'week' ? 'default' : 'outline'} 
-            onClick={() => onViewChange('week')}
+            onClick={() => {
+              haptics.selection();
+              onViewChange('week');
+            }}
             className="h-8 sm:h-9 text-xs sm:text-sm px-2 sm:px-3"
           >
             <Icon name="CalendarDays" size={12} className="mr-0.5 sm:mr-1" />
@@ -55,7 +62,10 @@ const CalendarHeader = ({
           <Button 
             size="sm" 
             variant={view === 'month' ? 'default' : 'outline'} 
-            onClick={() => onViewChange('month')}
+            onClick={() => {
+              haptics.selection();
+              onViewChange('month');
+            }}
             className="h-8 sm:h-9 text-xs sm:text-sm px-2 sm:px-3"
           >
             <Icon name="CalendarRange" size={12} className="mr-0.5 sm:mr-1" />
@@ -68,15 +78,18 @@ const CalendarHeader = ({
             <Button 
               size="sm" 
               variant="ghost"
-              onClick={onShareClick}
+              onClick={() => {
+                haptics.light();
+                onShareClick();
+              }}
               className="h-8 w-8 sm:h-9 sm:w-9 p-0"
             >
               <Icon name="Share2" size={14} />
             </Button>
-            <Button size="sm" variant="ghost" className="h-8 w-8 sm:h-9 sm:w-9 p-0">
+            <Button size="sm" variant="ghost" className="h-8 w-8 sm:h-9 sm:w-9 p-0" onClick={() => haptics.selection()}>
               <Icon name="ChevronLeft" size={14} />
             </Button>
-            <Button size="sm" variant="ghost" className="h-8 w-8 sm:h-9 sm:w-9 p-0">
+            <Button size="sm" variant="ghost" className="h-8 w-8 sm:h-9 sm:w-9 p-0" onClick={() => haptics.selection()}>
               <Icon name="ChevronRight" size={14} />
             </Button>
           </div>

@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import Icon from '@/components/ui/icon';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
+import { haptics } from '@/utils/haptics';
 
 const PublicCalendar = () => {
   const { masterId } = useParams();
@@ -13,6 +15,14 @@ const PublicCalendar = () => {
   const viewParam = searchParams.get('view') as 'day' | 'week' | 'month' | null;
   const [view, setView] = useState<'day' | 'week' | 'month'>(viewParam || 'day');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+
+  const handleRefresh = async () => {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  };
+
+  const { scrollableRef, pullDistance, isRefreshing, threshold } = usePullToRefresh({
+    onRefresh: handleRefresh,
+  });
 
   useEffect(() => {
     if (viewParam && ['day', 'week', 'month'].includes(viewParam)) {
@@ -39,11 +49,31 @@ const PublicCalendar = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 to-primary/10">
+    <div ref={scrollableRef} className="min-h-screen bg-gradient-to-br from-primary/5 to-primary/10 overflow-y-auto">
+      {pullDistance > 0 && (
+        <div
+          className="fixed top-0 left-0 right-0 flex items-center justify-center z-50 transition-all"
+          style={{
+            height: `${pullDistance}px`,
+            opacity: Math.min(pullDistance / threshold, 1),
+          }}
+        >
+          <div className="bg-background/90 backdrop-blur-sm rounded-full p-3 shadow-lg">
+            <Icon
+              name="RefreshCw"
+              size={24}
+              className={isRefreshing ? 'animate-spin text-primary' : 'text-muted-foreground'}
+            />
+          </div>
+        </div>
+      )}
       <div className="container max-w-2xl mx-auto px-4 py-8">
         <Button 
           variant="ghost" 
-          onClick={() => navigate('/')}
+          onClick={() => {
+            haptics.light();
+            navigate('/');
+          }}
           className="mb-4"
         >
           <Icon name="ArrowLeft" size={16} className="mr-2" />
@@ -77,7 +107,10 @@ const PublicCalendar = () => {
                 <Calendar
                   mode="single"
                   selected={selectedDate}
-                  onSelect={setSelectedDate}
+                  onSelect={(date) => {
+                    haptics.selection();
+                    setSelectedDate(date);
+                  }}
                   className="rounded-md border w-full"
                   disabled={(date) => date < new Date()}
                 />
@@ -94,7 +127,10 @@ const PublicCalendar = () => {
                       variant={slot.available ? "outline" : "secondary"}
                       disabled={!slot.available}
                       className="h-12"
-                      onClick={() => navigate(`/book/${masterId}?date=${selectedDate?.toISOString()}&time=${slot.time}`)}
+                      onClick={() => {
+                        haptics.medium();
+                        navigate(`/book/${masterId}?date=${selectedDate?.toISOString()}&time=${slot.time}`);
+                      }}
                     >
                       {slot.time}
                     </Button>

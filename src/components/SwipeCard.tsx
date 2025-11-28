@@ -1,6 +1,7 @@
 import { ReactNode, useRef, useState, TouchEvent, MouseEvent } from 'react';
 import { Button } from './ui/button';
 import Icon from './ui/icon';
+import { haptics } from '@/utils/haptics';
 
 interface SwipeCardProps {
   children: ReactNode;
@@ -84,6 +85,7 @@ const SwipeCard = ({
     const threshold = 100;
 
     if (Math.abs(diff) > threshold) {
+      haptics.medium();
       if (diff < 0 && onSwipeLeft) {
         onSwipeLeft();
       } else if (diff > 0 && onSwipeRight) {

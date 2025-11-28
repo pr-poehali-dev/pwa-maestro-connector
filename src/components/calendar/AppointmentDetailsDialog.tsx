@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import ShareDialog from '@/components/ShareDialog';
+import { haptics } from '@/utils/haptics';
 
 interface Appointment {
   id: number;
@@ -89,11 +90,17 @@ const AppointmentDetailsDialog = ({
               </div>
 
               <div className="flex gap-2">
-                <Button variant="outline" className="flex-1" onClick={() => { onClose(); }}>
+                <Button variant="outline" className="flex-1" onClick={() => { 
+                  haptics.light();
+                  onClose(); 
+                }}>
                   <Icon name="Phone" size={16} className="mr-2" />
                   Позвонить
                 </Button>
-                <Button variant="outline" className="flex-1" onClick={() => { onClose(); }}>
+                <Button variant="outline" className="flex-1" onClick={() => { 
+                  haptics.light();
+                  onClose(); 
+                }}>
                   <Icon name="MessageCircle" size={16} className="mr-2" />
                   Написать
                 </Button>
@@ -104,6 +111,7 @@ const AppointmentDetailsDialog = ({
                   variant="outline" 
                   className="w-full justify-start"
                   onClick={() => {
+                    haptics.medium();
                     onMove(selectedAppointment);
                     onClose();
                   }}
@@ -115,6 +123,7 @@ const AppointmentDetailsDialog = ({
                   variant="outline" 
                   className="w-full justify-start"
                   onClick={() => {
+                    haptics.medium();
                     onRepeat(selectedAppointment);
                     onClose();
                   }}
@@ -126,6 +135,7 @@ const AppointmentDetailsDialog = ({
                   variant="outline" 
                   className="w-full justify-start text-destructive hover:text-destructive"
                   onClick={() => {
+                    haptics.heavy();
                     onCancel(selectedAppointment.id);
                     onClose();
                   }}
