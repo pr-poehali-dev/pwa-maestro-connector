@@ -5,7 +5,6 @@ import ServicePreview from '@/components/ServicePreview';
 import ShareDialog from '@/components/ShareDialog';
 import ServiceCard from '@/components/services/ServiceCard';
 import ServiceFormDialog from '@/components/services/ServiceFormDialog';
-import ServiceEditDialog from '@/components/services/ServiceEditDialog';
 import ServiceDeleteDialog from '@/components/services/ServiceDeleteDialog';
 
 const services = [
@@ -155,12 +154,6 @@ const MasterServices = () => {
           setEditingService(viewService);
           setViewService(null);
         }}
-      />
-
-      <ServiceEditDialog
-        open={!!editingService}
-        onClose={() => setEditingService(null)}
-        editingService={editingService}
       />
 
       <ShareDialog

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -7,6 +8,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 const ServicePreview = () => {
   const { masterId, serviceId } = useParams();
   const navigate = useNavigate();
+  
+  // Перенаправляем сразу на букинг
+  React.useEffect(() => {
+    navigate(`/book/${masterId}/${serviceId}`, { replace: true });
+  }, [masterId, serviceId, navigate]);
 
   const service = {
     name: 'Маникюр с покрытием',

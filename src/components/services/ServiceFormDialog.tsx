@@ -139,25 +139,13 @@ const ServiceFormDialog = ({
             </Select>
           </div>
 
-          {(editingService?.type === 'offline' || selectedService?.type === 'offline') && (
-            <div className="space-y-2">
-              <Label>Адрес встречи</Label>
-              <Input 
-                placeholder="г. Москва, ул. Примерная, д. 1" 
-                defaultValue={editingService?.address || selectedService?.address}
-              />
-            </div>
-          )}
-
-          {(editingService?.type === 'online' || selectedService?.type === 'online') && (
-            <div className="space-y-2">
-              <Label>Ссылка на видеовстречу (опционально)</Label>
-              <Input 
-                placeholder="https://zoom.us/j/..." 
-                defaultValue={editingService?.videoLink || selectedService?.videoLink}
-              />
-            </div>
-          )}
+          <div className="space-y-2">
+            <Label>Адрес (оффлайн) / Ссылка (онлайн)</Label>
+            <Input 
+              placeholder={(editingService?.type === 'online' || selectedService?.type === 'online') ? 'https://zoom.us/j/...' : 'г. Москва, ул. Примерная, д. 1'} 
+              defaultValue={editingService?.address || editingService?.videoLink || selectedService?.address || selectedService?.videoLink}
+            />
+          </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">

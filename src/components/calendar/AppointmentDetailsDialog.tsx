@@ -141,6 +141,7 @@ const AppointmentDetailsDialog = ({
         title="Мой календарь записей"
         description="Поделитесь своим календарем с клиентами"
         url={`${window.location.origin}/calendar/master1`}
+        previewUrl={`${window.location.origin}/calendar/master1`}
         open={showCalendarShare}
         onClose={onShareClose}
       />

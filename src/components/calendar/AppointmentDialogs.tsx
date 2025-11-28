@@ -1,4 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -103,10 +104,11 @@ const AppointmentDialogs = ({
               <Label>Услуги</Label>
               <div className="space-y-2 max-h-48 overflow-y-auto border rounded-lg p-3">
                 {services.filter(s => s.id !== 'all').map(service => (
-                  <div key={service.id} className="flex items-center justify-between p-2 hover:bg-muted rounded">
+                  <div key={service.id} className={`flex items-center justify-between p-2 hover:bg-muted rounded ${(service as any).active === false ? 'opacity-50' : ''}`}>
                     <div className="flex items-center gap-2">
                       <Checkbox
                         checked={selectedServices.includes(service.id)}
+                        disabled={(service as any).active === false}
                         onCheckedChange={(checked) => {
                           if (checked) {
                             onServicesChange([...selectedServices, service.id]);
@@ -116,7 +118,10 @@ const AppointmentDialogs = ({
                         }}
                       />
                       <div>
-                        <p className="text-sm font-medium">{service.name}</p>
+                        <p className="text-sm font-medium">
+                          {service.name}
+                          {(service as any).active === false && <span className="ml-2 text-xs text-muted-foreground">(неактивна)</span>}
+                        </p>
                         <p className="text-xs text-muted-foreground">
                           {service.duration} мин • {service.price} ₽
                         </p>
@@ -152,27 +157,32 @@ const AppointmentDialogs = ({
               <Textarea placeholder="Дополнительная информация" rows={3} />
             </div>
 
-            <div className="space-y-3 p-3 border rounded-lg">
-              <div className="flex items-center justify-between">
-                <Label>Требуется предоплата</Label>
-                <Switch />
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Процент предоплаты (%)</Label>
-                <div className="flex items-center gap-2">
-                  <Input
-                    type="number"
-                    min="0"
-                    max="100"
-                    value={prepaymentPercent}
-                    onChange={(e) => onPrepaymentChange(Number(e.target.value))}
-                    className="flex-1"
-                  />
-                  <span className="text-sm text-muted-foreground">%</span>
+            <Card>
+              <CardContent className="p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="font-medium">Требуется предоплата</Label>
+                    <p className="text-xs text-muted-foreground">Клиент оплачивает часть при записи</p>
+                  </div>
+                  <Switch />
                 </div>
-              </div>
-            </div>
+                
+                <div className="space-y-2">
+                  <Label>Размер предоплаты (%)</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="number"
+                      min="10"
+                      max="100"
+                      value={prepaymentPercent}
+                      onChange={(e) => onPrepaymentChange(Number(e.target.value))}
+                      className="w-24"
+                    />
+                    <span className="text-sm text-muted-foreground">от 10% до 100%</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
             <div className="flex gap-2">
               <Button variant="outline" className="flex-1" onClick={onNewAppointmentClose}>

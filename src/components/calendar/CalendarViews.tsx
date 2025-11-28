@@ -81,9 +81,14 @@ const CalendarViews = ({
                                 <div className="flex-1 min-w-0">
                                   <p className="font-semibold text-sm truncate">{appointment.client}</p>
                                   <p className="text-xs text-muted-foreground truncate">{appointment.service}</p>
-                                  <div className="flex items-center gap-2 mt-1">
+                                  <div className="flex items-center gap-2 mt-1 flex-wrap">
                                     <Badge variant="outline" className="text-xs">
+                                      <Icon name="Clock" size={10} className="mr-1" />
                                       {appointment.duration} мин
+                                    </Badge>
+                                    <Badge variant="outline" className="text-xs">
+                                      <Icon name="MapPin" size={10} className="mr-1" />
+                                      Оффлайн
                                     </Badge>
                                     <Badge variant={appointment.status === 'confirmed' ? 'default' : 'secondary'} className="text-xs">
                                       {appointment.status === 'confirmed' ? 'Подтверждено' : 'Ожидание'}
@@ -171,7 +176,7 @@ const CalendarViews = ({
                               ? 'bg-primary/10 border-primary/30 p-1 cursor-pointer hover:shadow-md transition-shadow'
                               : 'bg-muted/30 hover:bg-muted/50 cursor-pointer'
                           }`}
-                          onClick={() => appointment && onAppointmentClick(appointment)}
+                          onClick={() => appointment ? onAppointmentClick(appointment) : onNewAppointmentClick(time)}
                         >
                           {appointment && (
                             <div className="space-y-0.5">
@@ -199,7 +204,13 @@ const CalendarViews = ({
             <Calendar
               mode="single"
               selected={selectedDate}
-              onSelect={onDateSelect}
+              onSelect={(date) => {
+                onDateSelect(date);
+                if (date) {
+                  const event = new CustomEvent('switchToDay');
+                  window.dispatchEvent(event);
+                }
+              }}
               className="rounded-md border-0 w-full"
               classNames={{
                 months: "w-full",

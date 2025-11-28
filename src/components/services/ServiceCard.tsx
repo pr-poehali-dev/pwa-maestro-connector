@@ -31,12 +31,12 @@ const ServiceCard = ({
     <SwipeCard
       key={service.id}
       onSwipeLeft={() => onDelete(service.id)}
-      onSwipeRight={() => onEdit(service)}
+      onSwipeRight={() => onDuplicate(service)}
       leftAction={{ icon: 'Trash2', label: 'Удалить', color: '#ef4444' }}
-      rightAction={{ icon: 'Edit', label: 'Редактировать', color: '#3b82f6' }}
+      rightAction={{ icon: 'Copy', label: 'Копировать', color: '#3b82f6' }}
     >
       <Card 
-        className="hover:shadow-md transition-shadow cursor-pointer"
+        className={`hover:shadow-md transition-shadow cursor-pointer ${!service.active ? 'opacity-50' : ''}`}
         onClick={() => onView(service)}
       >
         <CardContent className="p-4">
@@ -85,6 +85,7 @@ const ServiceCard = ({
               <Button 
                 size="sm" 
                 variant="ghost"
+                disabled={!service.active}
                 onClick={(e) => {
                   e.stopPropagation();
                   onShare(service);

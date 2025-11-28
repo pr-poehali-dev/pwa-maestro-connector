@@ -100,7 +100,7 @@ const ServicePreview = ({ service, open, onClose, onEdit }: ServicePreviewProps)
             {onEdit && (
               <Button className="flex-1" onClick={onEdit}>
                 <Icon name="Edit" size={16} className="mr-2" />
-                Изменить
+                Редактировать
               </Button>
             )}
           </div>

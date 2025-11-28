@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CalendarHeader from '@/components/calendar/CalendarHeader';
 import CalendarViews from '@/components/calendar/CalendarViews';
 import AppointmentDialogs from '@/components/calendar/AppointmentDialogs';
@@ -12,10 +12,10 @@ const appointments = [
 ];
 
 const services = [
-  { id: 'all', name: 'Все услуги' },
-  { id: '1', name: 'Маникюр с покрытием', duration: 60, price: 1500 },
-  { id: '2', name: 'Педикюр', duration: 90, price: 2000 },
-  { id: '3', name: 'Чистка лица', duration: 60, price: 3000 },
+  { id: 'all', name: 'Все услуги', active: true },
+  { id: '1', name: 'Маникюр с покрытием', duration: 60, price: 1500, active: true },
+  { id: '2', name: 'Педикюр', duration: 90, price: 2000, active: true },
+  { id: '3', name: 'Чистка лица', duration: 60, price: 3000, active: false },
 ];
 
 const timeSlots = Array.from({ length: 12 }, (_, i) => {
@@ -55,6 +55,15 @@ const MasterCalendar = () => {
   const handleRepeatAppointment = (appointment: typeof appointments[0]) => {
     setAppointmentToRepeat(appointment);
   };
+
+  useEffect(() => {
+    const handleSwitchToDay = () => {
+      setView('day');
+    };
+    
+    window.addEventListener('switchToDay', handleSwitchToDay);
+    return () => window.removeEventListener('switchToDay', handleSwitchToDay);
+  }, []);
 
   let filteredAppointments = appointments;
   
